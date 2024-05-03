@@ -1,37 +1,3 @@
-function GetPropertyOrDefault(obj, propertyName, defaultValue)
-    local success, value = pcall(function() return obj[propertyName] end)
-    if success then
-        return value or defaultValue
-    else
-        return defaultValue
-    end
-end
-
-local function getMouseover()
-    mouseover = Ext.IMGUI.GetPickingHelper(1)
-    if mouseover ~= nil then
-        return mouseover
-    else
-        _P("No mouseover")
-    end 
-end
-local function getEntityUUID()
-    entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Character
-    if entity ~= nil then
-        return Ext.Entity.HandleToUuid(entity)
-    else
-        _P("Not a character")
-    end
-end
-local function getItemUUID()
-    item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Item
-    if item ~= nil then
-        return Ext.Entity.HandleToUuid(item)
-    else
-    _P("Not an Item")
-    end
-end
-
 Ext.Events.KeyInput:Subscribe(function (e)
     if e.Event == "KeyDown" and e.Repeat == false then
         _P("Something pressed")
@@ -47,14 +13,18 @@ Ext.Events.KeyInput:Subscribe(function (e)
                 entityRace.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).Race.Race)
                 entityBodyType.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).BodyType.BodyType)
                 
-                if GetPropertyOrDefault(Ext.Entity.Get(getEntityUUID()), "ServerCharacter", nil) then
-                    _P("ServerCharacter Found!")
-                    entityCVID.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).ServerCharacter.Template.CharacterVisualResourceID)
-                    _P("Added EntityVisual")
-                    dumpVisual.Label = Ext.DumpExport(Ext.Resource.Get(entityCVID.Label, "Visual"))
-                else
-                    _P("Not a ServerCharacter")
-                end
+                -- Get ServerCharacter Dump
+                Ext.Net.PostMessageToServer("RequestServerCharacter", getEntityUUID())
+
+
+                --if GetPropertyOrDefault(Ext.Entity.Get(getEntityUUID()), "ServerCharacter", nil) then
+                --    _P("ServerCharacter Found!")
+                --    entityCVID.Label = Ext.Entity.Get(getEntityUUID()).ServerCharacter.Template.CharacterVisualResourceID
+                --    _P("Added EntityVisual")
+                --    dumpVisual.Label = Ext.DumpExport(Ext.Resource.Get(entityCVID.Label, "Visual"))
+                --else
+                --    _P("Not a ServerCharacter")
+                --end
 
                 dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()):GetAllComponents())
             end
@@ -66,7 +36,16 @@ Ext.Events.KeyInput:Subscribe(function (e)
 
         if e.Key == "NUM_2" then
         _P("Num_2 pressed")
-        Ext.IO.SaveFile("mouseoverDump.json", Ext.DumpExport(Ext.IMGUI.GetPickingHelper(1)))
+        Ext.IO.SaveFile("mouseoverDump.json", Ext.DumpExport(getMouseover())
+        Ext.IO.SaveFile("entityDump.json"), Ext.DumpExport(getEntityUUID())
         end
+    end
+end)
+
+Ext.Events.NetMessage:Subscribe(function(e) 
+    if (e.Channel == "SendServerCharacterDump") then
+        local dump = Ext.Json.Parse(e.Payload)
+        entityCVID.Label = dump
+        dumpVisual.Label = Ext.Resource.Get(entityCVID.Label, "Visual")
     end
 end)
