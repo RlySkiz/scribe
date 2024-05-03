@@ -14,7 +14,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
         if e.Key == "NUM_1" then
             _P("Num_1 pressed")
             _D(Ext.IMGUI.GetPickingHelper(1))
-            --dumpArea.Label = _D(Ext.IMGUI.GetPickingHelper(1))
+            dumpArea.Label = Ext.DumpExport(Ext.IMGUI.GetPickingHelper(1))
         end    
         if e.Key == "NUM_2" then
         _P("Num_2 pressed")
