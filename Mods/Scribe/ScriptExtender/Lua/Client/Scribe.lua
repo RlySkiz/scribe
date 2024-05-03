@@ -6,7 +6,7 @@ local function getMouseover()
         _P("No mouseover")
     end 
 end
-local function getEntity()
+local function getEntityUUID()
     entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Character
     if entity ~= nil then
         return Ext.Entity.HandleToUuid(entity)
@@ -14,7 +14,7 @@ local function getEntity()
         _P("Not a character")
     end
 end
-local function getItem()
+local function getItemUUID()
     item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Item
     if item ~= nil then
         return Ext.Entity.HandleToUuid(item)
@@ -32,20 +32,22 @@ Ext.Events.KeyInput:Subscribe(function (e)
             _D(Ext.IMGUI.GetPickingHelper(1))
             dumpMouseover.Label = Ext.DumpExport(getMouseover())
 
-            if getEntity() ~= nil then
-                -- Ext.DumpExport(Ext.Entity.Get(getEntity())
-                entityName.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).CustomName.Name)
-                entityRace.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).Race.Race)
-                entityBodyType.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).BodyType.BodyType)
-                if Ext.Entity.Get(getEntity()).ServerCharacter.Template.CharacterVisualResourceID then
-                    entityCVID.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).ServerCharacter.Template.CharacterVisualResourceID)
+            if getEntityUUID() ~= nil then
+                -- Ext.DumpExport(Ext.Entity.Get(getEntityUUID())
+                entityName.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).CustomName.Name)
+                entityRace.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).Race.Race)
+                entityBodyType.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).BodyType.BodyType)
+                
+                if GetPropertyOrDefault(Ext.Entity.Get(getEntityUUID()), "CharacterVisualResourceID", nil) then
+                    entityCVID.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).ServerCharacter.Template.CharacterVisualResourceID)
                     dumpVisual.Label = Ext.DumpExport(Ext.Resource.Get(entityCVID.Label, "Visual"))
                 end
-                dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()):GetAllComponents())
+
+                dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()):GetAllComponents())
             end
 
-            if getItem() ~= nil then
-                dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getItem()):GetAllComponents())
+            if getItemUUID() ~= nil then
+                dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getItemUUID()):GetAllComponents())
             end
         end    
 
