@@ -8,7 +8,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
         if e.Key == "NUM_1" then
             _P("Num_1 pressed")
             _D(Ext.IMGUI.GetPickingHelper(1))
-            dumpArea.Label = Ext.IMGUI.GetPickingHelper(1)
+            dumpArea.Label = Ext.Json.Stringify(Ext.IMGUI.GetPickingHelper(1))
         end    
     end
 end)
