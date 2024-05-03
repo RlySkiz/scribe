@@ -38,7 +38,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
                 entityRace.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).Race.Race)
                 entityBodyType.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).BodyType.BodyType)
                 
-                if GetPropertyOrDefault(Ext.Entity.Get(getEntityUUID()), "CharacterVisualResourceID", nil) then
+                if GetPropertyOrDefault(Ext.Entity.Get(getEntityUUID()), "ServerCharacter", nil) then
                     entityCVID.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).ServerCharacter.Template.CharacterVisualResourceID)
                     dumpVisual.Label = Ext.DumpExport(Ext.Resource.Get(entityCVID.Label, "Visual"))
                 end
