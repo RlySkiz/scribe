@@ -1,5 +1,5 @@
 w = Ext.IMGUI.NewWindow("Scribe")
-w:ddText("Dump:")
+w:AddText("Dump:")
 dumpArea = w:AddText("Dump Area")
 
 Ext.Events.KeyInput:Subscribe(function (e)
