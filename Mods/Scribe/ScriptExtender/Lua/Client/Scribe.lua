@@ -1,5 +1,6 @@
-w.Ext.IMGUI.NewWindow("")
-dumpArea = w:AddText("")
+w = Ext.IMGUI.NewWindow("Scribe")
+w:ddText("Dump:")
+dumpArea = w:AddText("Dump Area")
 
 Ext.Events.KeyInput:Subscribe(function (e)
     if e.Event == "KeyDown" and e.Repeat == false then
