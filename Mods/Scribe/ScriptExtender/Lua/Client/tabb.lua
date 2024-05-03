@@ -1,2 +1,1 @@
-testdump = tabb:AddText("test")
-_D(testdump)
+dumpEntity = tabb:AddText("")
