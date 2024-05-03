@@ -48,8 +48,12 @@ Ext.Events.KeyInput:Subscribe(function (e)
                 entityBodyType.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).BodyType.BodyType)
                 
                 if GetPropertyOrDefault(Ext.Entity.Get(getEntityUUID()), "ServerCharacter", nil) then
+                    _P("ServerCharacter Found!")
                     entityCVID.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()).ServerCharacter.Template.CharacterVisualResourceID)
+                    _P("Added EntityVisual")
                     dumpVisual.Label = Ext.DumpExport(Ext.Resource.Get(entityCVID.Label, "Visual"))
+                else
+                    _P("Not a ServerCharacter")
                 end
 
                 dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()):GetAllComponents())
