@@ -1,3 +1,12 @@
+function GetPropertyOrDefault(obj, propertyName, defaultValue)
+    local success, value = pcall(function() return obj[propertyName] end)
+    if success then
+        return value or defaultValue
+    else
+        return defaultValue
+    end
+end
+
 local function getMouseover()
     mouseover = Ext.IMGUI.GetPickingHelper(1)
     if mouseover ~= nil then

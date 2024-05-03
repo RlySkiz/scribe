@@ -3,11 +3,11 @@
 -- @param propertyName  The name of the property to retrieve.
 -- @param defaultValue  The default value to return if the property is not found.
 -- @return              The value of the property if found; otherwise, the default value.
-function GetPropertyOrDefault(obj, propertyName, defaultValue)
-    local success, value = pcall(function() return obj[propertyName] end)
-    if success then
-        return value or defaultValue
-    else
-        return defaultValue
-    end
-end
+--function GetPropertyOrDefault(obj, propertyName, defaultValue)
+--    local success, value = pcall(function() return obj[propertyName] end)
+--    if success then
+--        return value or defaultValue
+--    else
+--        return defaultValue
+--    end
+--end
