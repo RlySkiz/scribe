@@ -36,8 +36,8 @@ Ext.Events.KeyInput:Subscribe(function (e)
 
         if e.Key == "NUM_2" then
         _P("Num_2 pressed")
-        Ext.IO.SaveFile("mouseoverDump.json", Ext.DumpExport(getMouseover())
-        Ext.IO.SaveFile("entityDump.json"), Ext.DumpExport(getEntityUUID())
+        Ext.IO.SaveFile("mouseoverDump.json", Ext.DumpExport(getMouseover()))
+        Ext.IO.SaveFile("entityDump.json", Ext.DumpExport(getEntityUUID()))
         end
     end
 end)
