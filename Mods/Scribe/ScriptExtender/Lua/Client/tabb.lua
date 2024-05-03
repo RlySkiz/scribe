@@ -1,1 +1,0 @@
-dumpEntity = tabb:AddText("")
