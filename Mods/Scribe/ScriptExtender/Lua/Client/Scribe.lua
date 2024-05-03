@@ -20,5 +20,10 @@ Ext.Events.KeyInput:Subscribe(function (e)
         _P("Num_2 pressed")
         Ext.IO.SaveFile("mouseoverDump.json", Ext.DumpExport(Ext.IMGUI.GetPickingHelper(1)))
         end
+
+        if e.Key == "NUM_3" then
+            _P("TestDump:")
+            _D(testdump)
+        end
     end
 end)
