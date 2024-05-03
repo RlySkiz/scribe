@@ -11,7 +11,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
             dumpMouseover.Label = Ext.DumpExport(mouseover)
 
             if entity ~= nil then
-                dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(entity):GetAllComponents)
+                dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(entity):GetAllComponents())
             end
         end    
         if e.Key == "NUM_2" then
