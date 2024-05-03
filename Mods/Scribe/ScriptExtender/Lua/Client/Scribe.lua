@@ -1,5 +1,5 @@
 w = Ext.IMGUI.NewWindow("Scribe")
-tabbar = w:AddTabBar()
+tabbar = w:AddTabBar("")
 taba = tabbar:AddTabItem("Main")
 taba:AddText("Num_1 = dump | Num_2 = dump file")
 taba:AddText("Dump:")
