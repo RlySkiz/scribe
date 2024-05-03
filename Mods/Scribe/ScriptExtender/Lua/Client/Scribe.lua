@@ -1,11 +1,26 @@
 local function getMouseover()
-    return Ext.IMGUI.GetPickingHelper(1)
+    mouseover = Ext.IMGUI.GetPickingHelper(1)
+    if mouseover ~= nil then
+        return mouseover
+    else
+        _P("No mouseover")
+    end 
 end
 local function getEntity()
-    return Ext.IMGUI.GetPickingHelper(1).Inner.Inner.Character
+    entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner.Character
+    if entity ~= nil then
+        return entity
+    else
+        _P("Not a character")
+    end
 end
 local function getItem()
-    return Ext.IMGUI.GetPickingHelper(1).Inner.Inner.Item
+    item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner.Item
+    if item ~= nil then
+        return item
+    else
+    _P("Not an Item")
+    end
 end
 
 Ext.Events.KeyInput:Subscribe(function (e)
@@ -17,7 +32,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
             _D(Ext.IMGUI.GetPickingHelper(1))
             dumpMouseover.Label = Ext.DumpExport(getMouseover())
 
-            if entity ~= nil then
+            if getEntity() ~= nil then
                 dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()):GetAllComponents())
             end
 
