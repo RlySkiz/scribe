@@ -1,13 +1,3 @@
-w = Ext.IMGUI.NewWindow("Scribe")
-tabbar = w:AddTabBar("")
-taba = tabbar:AddTabItem("Main")
-taba:AddText("Num_1 = dump | Num_2 = dump file")
-taba:AddText("Dump:")
-dumpMouseover = taba:AddText("")
-
-tabb = tabbar:AddTabItem("Entity")
-tabb:AddText("Dump")
-
 mouseover = Ext.IMGUI.GetPickingHelper(1)
 entity = mouseover.Inner.Inner.Character
 item = mouseover.Inner.Inner.Item
