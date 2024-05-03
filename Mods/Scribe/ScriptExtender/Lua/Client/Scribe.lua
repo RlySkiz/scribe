@@ -7,7 +7,7 @@ local function getMouseover()
     end 
 end
 local function getEntity()
-    entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner.Character
+    entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Character
     if entity ~= nil then
         return entity
     else
@@ -15,7 +15,7 @@ local function getEntity()
     end
 end
 local function getItem()
-    item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner.Item
+    item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Item
     if item ~= nil then
         return item
     else
