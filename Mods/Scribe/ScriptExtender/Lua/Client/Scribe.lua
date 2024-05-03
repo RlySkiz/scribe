@@ -9,7 +9,7 @@ end
 local function getEntity()
     entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Character
     if entity ~= nil then
-        return Ext.DumpExport(entity)
+        return Ext.DumpExport(Ext.Entity.HandleToUuid(entity))
     else
         _P("Not a character")
     end
@@ -17,7 +17,7 @@ end
 local function getItem()
     item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Item
     if item ~= nil then
-        return Ext.DumpExport(item)
+        return Ext.DumpExport(Ext.Entity.HandleToUuid(item))
     else
     _P("Not an Item")
     end
