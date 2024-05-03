@@ -33,6 +33,14 @@ Ext.Events.KeyInput:Subscribe(function (e)
             dumpMouseover.Label = Ext.DumpExport(getMouseover())
 
             if getEntity() ~= nil then
+                -- Ext.DumpExport(Ext.Entity.Get(getEntity())
+                entityName.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).CustomName.Name)
+                entityRace.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).Race.Race)
+                entityBodyType.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).BodyType.BodyType)
+                if Ext.Entity.Get(getEntity()).ServerCharacter.Template.CharacterVisualResourceID then
+                    entityCVID.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()).ServerCharacter.Template.CharacterVisualResourceID)
+                    dumpVisual.Label = Ext.DumpExport(Ext.Resource.Get(entityCVID.Label, "Visual"))
+                end
                 dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntity()):GetAllComponents())
             end
 
