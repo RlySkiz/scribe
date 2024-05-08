@@ -1,4 +1,4 @@
-function getMouseover()
+function GetMouseover()
     mouseover = Ext.IMGUI.GetPickingHelper(1)
     if mouseover ~= nil then
         return mouseover
@@ -6,19 +6,27 @@ function getMouseover()
         _P("No mouseover")
     end 
 end
-function getEntityUUID()
+
+function GetMouseoverDump()
+    return Ext.DumpExport(GetMouseover())
+end
+
+function GetEntityUUID()
     entity = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Character
-    if entity ~= nil then
+    if entity ~= null then
         return Ext.Entity.HandleToUuid(entity)
     else
         _P("Not a character")
+        return null
     end
 end
-function getItemUUID()
+
+function GetItemUUID()
     item = Ext.IMGUI.GetPickingHelper(1).Inner.Inner[1].Item
-    if item ~= nil then
+    if item ~= null then
         return Ext.Entity.HandleToUuid(item)
     else
-    _P("Not an Item")
+        _P("Not an Item")
+        return null
     end
 end

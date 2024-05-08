@@ -1,4 +1,4 @@
-visualTab = tabbar:AddTabItem("Visual")
+visualBankTab = tabbar:AddTabItem("CharacterVisual")
 
-visualTab:AddText("Dump")
-dumpVisual = visualTab:AddText("")
+visualBankTab:AddText("Dump")
+dumpVisualBankArea = visualBankTab:AddText("")

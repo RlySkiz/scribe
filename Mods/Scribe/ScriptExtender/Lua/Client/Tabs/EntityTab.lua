@@ -1,5 +1,9 @@
 entityTab = tabbar:AddTabItem("Entity")
 
+entityTab:AddText("UUID: ")
+entityUUIDText = entityTab:AddText("")
+entityUUIDText.SameLine = true
+
 entityTab:AddText("Name: ")
 entityName = entityTab:AddText("")
 entityName.SameLine = true

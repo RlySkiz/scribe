@@ -1,11 +1,19 @@
 treeTab = tabbar:AddTabItem("Tree Test")
 
-tree = treeTab:AddTree("Test")
+treeTable = treeTab:AddTable("",2)
+treeTableRow = treeTable:AddRow()
 
-tree:AddText("Text1")
-tree:AddText("Text2")
-text3 = tree:AddText("Text3")
---text3.Leaf = true
---text3:AddText("Text3.1")
-tree:AddButton("Button1")
-tree:AddCollapsingHeader("")
+root = treeTableRow:AddCell():AddTree("Test")
+root.DefaultOpen = true
+
+treeSelectionDump = treeTableRow:AddCell():AddInputText("")
+treeSelectionDump.Text = "Placeholder"
+
+item1 = root:AddTree("Item1")
+item2 = root:AddTree("Item2")
+item2.CollapsingHeader = true
+item11 = item1:AddTree("Item1.1")
+item21 = item2:AddTree("Item2.1")
+item111 = item11:AddTree("Item1.1.1")
+
+
