@@ -7,3 +7,4 @@ Ext.Require("Client/ClientUtils.lua")
 Ext.Require("Client/Scribe.lua")
 
 Ext.Require("Client/Logic/Sorting.lua")
+Ext.Require("Client/Logic/Node.lua")
