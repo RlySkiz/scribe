@@ -11,3 +11,4 @@ function GetPropertyOrDefault(obj, propertyName, defaultValue)
         return defaultValue
     end
 end
+

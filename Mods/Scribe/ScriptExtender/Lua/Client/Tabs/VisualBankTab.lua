@@ -1,4 +1,10 @@
-visualTab = tabbar:AddTabItem("Visual")
+visualTab = tabbar:AddTabItem("VisualBank")
 
-visualTab:AddText("Dump")
-dumpVisual = visualTab:AddText("")
+
+visualTab:AddSeparator()
+
+visualTable = visualTab:AddTable("",2)
+visualTable.ScrollY = true
+visualTableRow = visualTable:AddRow("")
+visualDumpTree = visualTableRow:AddCell():AddTree("VisualResource")
+visualDumpInfo = visualTableRow:AddCell():AddText("")

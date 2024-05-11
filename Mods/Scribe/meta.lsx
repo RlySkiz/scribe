@@ -11,7 +11,6 @@
           <attribute id="Author" type="LSString" value="Skiz" />
           <attribute id="Description" type="LSString" value="Modding Helper" />
           <attribute id="Folder" type="LSString" value="Scribe" />
-
           <attribute id="CharacterCreationLevelName" type="FixedString" value="" />
           <attribute id="LobbyLevelName" type="FixedString" value="" />
           <attribute id="MD5" type="LSString" value="" />
