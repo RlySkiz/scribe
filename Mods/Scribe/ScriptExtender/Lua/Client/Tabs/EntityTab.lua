@@ -1,7 +1,6 @@
 entityTab = tabbar:AddTabItem("Entity")
 
 
-
 entityTab:AddText("Name: ")
 entityName = entityTab:AddText("")
 entityName.SameLine = true

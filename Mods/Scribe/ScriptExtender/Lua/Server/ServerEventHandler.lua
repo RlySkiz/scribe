@@ -6,9 +6,9 @@ Ext.Events.NetMessage:Subscribe(function(e)
     end
 
     if (e.Channel == "ScribeRequestHost") then
-        _P("Request received")
+        -- _P("Request received")
         local host = Osi.GetHostCharacter()
-        _P("Server Host: " .. host)
+        -- _P("Server Host: " .. host)
         Ext.Net.BroadcastMessage("ScribeSendHost", host)
     end
 end)

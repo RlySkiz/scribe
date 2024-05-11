@@ -1,6 +1,5 @@
 Ext.Events.KeyInput:Subscribe(function (e)
     if e.Event == "KeyDown" and e.Repeat == false then
-        _P("Something pressed")
 
         if e.Key == "NUM_3" then
             _P("Pressed 3")
@@ -40,6 +39,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
             end
         end    
 
+        -- Saves dump files to ScriptExtender folder
         if e.Key == "NUM_2" then
         --_P("Num_2 pressed")
         Ext.IO.SaveFile("mouseoverDump.json", Ext.DumpExport(getMouseover()))
