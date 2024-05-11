@@ -29,7 +29,7 @@ Ext.Events.NetMessage:Subscribe(function(e)
     if (e.Channel == "ScribeSendHost") then
         local host = e.Payload
         setHost(host)
-        _P("received host ", host)
+        -- _P("received host ", host)
     end
 
 
@@ -37,8 +37,8 @@ Ext.Events.NetMessage:Subscribe(function(e)
     if (e.Channel == "SendCharacterVisualDump") then
         local visual = Ext.Json.Parse(e.Payload)
         characterVisual = visual
-        _P("received visual ", visual)
-        
+        -- _P("received visual ", visual)
+
     end
 end)
 
@@ -47,9 +47,9 @@ end)
  
 -- Request Host Character
 function RequestHostCharacter()
-    _P("Requestting host character")
+    -- _P("Requestting host character")
     Ext.Net.PostMessageToServer("ScribeRequestHost","")
-    _P("Sent request")
+    -- _P("Sent request")
 end
 
 -- Request CharacterVisual
