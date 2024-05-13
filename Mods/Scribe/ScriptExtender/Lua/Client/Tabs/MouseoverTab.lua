@@ -7,6 +7,8 @@ mouseoverSearchInput = mouseoverTab:AddInputText("")
 mouseoverSearchInput.AutoSelectAll = true
 mouseoverSearchInput.Text = "Test"
 mouseoverSearchInput.IDContext = "mouseoverInputTextField"
+mouseoverSearchButton = mouseoverTab:AddButton("Search")
+mouseoverSearchButton.SameLine = true
 
 ------------- Fucking fuck why do InputText fields not work ---------------
 
@@ -47,13 +49,36 @@ mouseoverTab:AddSeparator()
 mouseoverTable = mouseoverTab:AddTable("",2)
 mouseoverTable.ScrollY = true
 mouseoverTableRow = mouseoverTable:AddRow("")
-mouseoverDumpTree = mouseoverTableRow:AddCell():AddTree("Mouseover")
-mouseoverDumpInfo = mouseoverTableRow:AddCell():AddText("")
 
+-- function InitializeMouseoverTree()
+
+-- end
 
 --------------------  Functionality  -----------------------
 
-mouseoverSearchInput.OnChange = function()
+if mouseoverDumpTree ~= nil then
+    mouseoverDumpTree.OnClick = function()
+        if mouseoverDumpTree.Selected then
+            mouseoverDumpTree.Selected = false
+        else
+            mouseoverDumptree.Selected = true
+        end
+    end
+end
+
+-- Quicksearch
+-- mouseoverSearchInput.OnChange = function()
+--     sort = Sorting:new()
+
+--     local ogDump = GetOriginalDump()
+--     -- _D(ogDump)
+
+--     newMouseoverDump = sort:filter(mouseoverSearchInput.Text, ogDump)
+--     PopulateTree(mouseoverDumpTree, newMouseoverDump)
+-- end
+
+-- Buttonsearch
+mouseoverSearchButton.OnClick = function()
     sort = Sorting:new()
 
     local ogDump = GetOriginalDump()
@@ -61,8 +86,4 @@ mouseoverSearchInput.OnChange = function()
 
     newMouseoverDump = sort:filter(mouseoverSearchInput.Text, ogDump)
     PopulateTree(mouseoverDumpTree, newMouseoverDump)
-end
-
-mouseoverDumpTree.OnClick = function()
-    mouseoverDumpTree.Selected = true
 end

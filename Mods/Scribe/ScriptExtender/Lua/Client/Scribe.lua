@@ -1,12 +1,4 @@
-local originalDump = {}
 
-function GetOriginalDump()
-    return originalDump
-end
-
-local function setOriginalDump(value)
-    originalDump = value
-end
 
 
 Ext.Events.KeyInput:Subscribe(function (e)
@@ -14,48 +6,10 @@ Ext.Events.KeyInput:Subscribe(function (e)
 
         if e.Key == "NUM_3" then
             _P("Pressed 3")
-            InitializeTab(mouseoverTab)
-
-            setOriginalDump(serializeMouseoverDump(getMouseover()))
-            -- _P(Ext.Types.GetObjectType (mouseoverDumpTree))
-            -- _P("mouseoverDumptree is of type " .. type(mouseoverDumpTree))
-            -- _P("Print ", mouseoverDumpTree)
-            _D(mouseoverDumpTree)
-
-            local root = {}
-            tree1 = Node:new("Root", nil, root)
-            -- _D(tree1:getChildren())
-            tree1:addChild(Node:new("Child 1", tree1, {}))
-
-            -- child2 = Node:new("Child 2", tree1, {})
-            -- tree1:addChild(child2)
-
-            tree1:addChild(Node:new("Child 2", tree1, {}))
-
-            tree1Children = tree1:getChildren()
-
-            child2 = tree1Children[2]
-            child2:addChild(Node:new("Child 2.1", child2, {}))
-            child2:addChild(Node:new("Child 2.2", child2, {}))
-            tree1:addChild(Node:new("Child 3", tree1, {}))
-            -- _D(tree1:getChildren())
-
-            _D(tree1:getChildrenNames(tree1, {}))
-
-            -- _D(mouseoverDumpTree.Parent.Children)
-
-            --_D(child2:getChildrenNames(self, {}))
-
-            -- _D(mouseoverDumpTree.Children)
-            -- treeparent = mouseoverDumpTree.Parent
-            -- TableSize(mouseoverDumpTree)
-            -- for x,y in treeparent do
-            --     _P(x)
-            --     _P(y)
-            -- end
-
-            --InitializeTab(entityTab)
-            --InitializeTab(visualTab)
+            InitializeTree(mouseoverTab)
+            
+            --InitializeTree(entityTab)
+            --InitializeTree(visualTab)
         end
 
         if e.Key == "NUM_4" then
