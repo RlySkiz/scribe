@@ -58,13 +58,13 @@ function Sorting:filter(searchTerm, tableToFilter)
     if type(tableToFilter) == "table" then
         for key, value in pairs(tableToFilter) do
             local foundInKey = false
-            _P("Key ", key, " value ", value)
+            --_P("Key ", key, " value ", value)
 
             -- Check for search term in the key
             if caseInsensitiveSearch(tostring(key), searchTerm) then
                 print("found ", searchTerm, " in key ", key)
                 foundInKey = true
-                _P("found value in key")
+              --  _P("found value in key")
             end
 
             -- Continue processing only if the key search was not successful

@@ -79,11 +79,18 @@ end
 
 -- Buttonsearch
 mouseoverSearchButton.OnClick = function()
+    _P("Search Button Clicked")
+    _P("Searching for: ", mouseoverSearchInput.Text)
+
     sort = Sorting:new()
 
-    local ogDump = GetOriginalDump()
-    -- _D(ogDump)
-
+    local ogDump = GetCopiedTable(mouseoverTab.Label, nil)
     newMouseoverDump = sort:filter(mouseoverSearchInput.Text, ogDump)
-    PopulateTree(mouseoverDumpTree, newMouseoverDump)
+
+    if #newMouseoverDump == 0 then
+        newMouseOverDump = "No results found"
+    end
+
+    InitializeTree(mouseoverTab, newMouseoverDump)
+    mouseoverDumpInfo.Label = Ext.DumpExport(newMouseoverDump)
 end

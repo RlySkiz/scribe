@@ -6,10 +6,11 @@ Ext.Events.KeyInput:Subscribe(function (e)
 
         if e.Key == "NUM_3" then
             _P("Pressed 3")
-            InitializeTree(mouseoverTab)
-            
-            --InitializeTree(entityTab)
-            --InitializeTree(visualTab)
+            -- InitializeTree(mouseoverTab, nil)
+            InitializeTree(entityTab, nil)
+
+
+            --InitializeTree(visualTab, nil)
         end
 
         if e.Key == "NUM_4" then
@@ -35,7 +36,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
                 Ext.Net.PostMessageToServer("RequestCharacterVisual", getEntityUUID())
                 CreateComponentTree(entityDumpTree, dumpAll)                                                -- works
                 entityDumpInfo.Label = Ext.DumpExport(dumpAll)
-                _D(entityDumpTree)
+                -- _D(entityDumpTree)
                 -- entityDumpTree.Selected = true
                 else
                 dumpEntity.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()):GetAllComponents())
