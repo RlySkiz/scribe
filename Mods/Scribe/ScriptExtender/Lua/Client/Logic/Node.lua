@@ -4,14 +4,36 @@ Node.__index = Node
 ---@param name string
 ---@param parent node
 ---@param children list
-function Node:new(name, parent, children)
+---@param ID string
+---@param bullet boolean
+function Node:new(name, parent, children, ID, bullet)
     local instance = setmetatable({
         name = name,
         parent = parent,
         children = children,
+        ID = ID,
+        bullet = bullet,
     }, Node)
     return instance
 end
+
+-- mynode = Node:new("Spells", nil, {"fire","ice"}, 1, 0)
+-- firenode = Node:new("fire", mynode, {"Fireball", "Flame Strike", "Wall of Fire"}, 2, 0)
+-- ballnode = Node:new("fireball", firenode, {}, 3, 1)
+
+
+-- local spells = {
+--     ["fire"] = {
+--         "Fireball",
+--         "Flame Strike",
+--         "Wall of Fire"
+--     },
+--     ["ice"] = {
+--         "Ice Storm",
+--         "Cone of Cold",
+--         "Freeze"
+--     }
+-- }
 
 -- Returns the Nodes Name
 ---@return name string
@@ -32,6 +54,11 @@ function Node:getChildren()
         return self.children
     --end
 end
+
+function Node:getID()
+    return self.ID
+end
+
 
 -- -- Returns the Nodes Children
 -- ---@return children list

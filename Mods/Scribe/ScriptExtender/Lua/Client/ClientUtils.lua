@@ -24,6 +24,9 @@ function getEntityUUID()
 end
 
 
+
+
+
 -- copied tables
 -- key : label name
 -- value: table
@@ -76,8 +79,8 @@ end
 
 
 
-
-
+-- local traversalTree = {}
+-- local traversalIndex = 1
 function PopulateTree(tree, currentTable, parent)
     success, iterator = pcall(pairs, currentTable)
     if success == true and (type(currentTable) == "table" or type(currentTable) == "userdata") then
@@ -89,14 +92,26 @@ function PopulateTree(tree, currentTable, parent)
                     local stringify = Ext.Json.Stringify(content, opts)
                     if stringify == "{}" then
                         local newTree = tree:AddTree(tostring(label))
+                        -- newTree.IDContext = tostring(tree.Label) .. tostring(traversalIndex)
                         --TODO - check if bullet works here 
                         newTree.Bullet = true
+                        -- table.insert(traversalTree, newTree)
+                        -- _P("Added ", traversalTree[traversalIndex].Label, " to IDContext: ", traversalTree[traversalIndex].IDContext)
+                        -- traversalIndex = traversalIndex+1                        
                     else
                         local newTree = tree:AddTree(tostring(label))
+                        -- newTree.IDContext = tostring(tree.Label) .. tostring(traversalIndex)
+                        -- table.insert(traversalTree, newTree)
+                        -- _P("Added ", traversalTree[traversalIndex].Label, " to IDContext: ", traversalTree[traversalIndex].IDContext)
+                        -- traversalIndex = traversalIndex+1
                     end
                 else
                     local newTree = tree:AddTree(tostring(label))
+                    -- newTree.IDContext = tostring(tree.Label) .. tostring(traversalIndex)
                     newTree.Bullet = true
+                    -- table.insert(traversalTree, newTree)
+                    -- _P("Added ", traversalTree[traversalIndex].Label, " to IDContext: ", traversalTree[traversalIndex].IDContext)
+                    -- traversalIndex = traversalIndex+1
                 end
             else
                 -- parent not found
@@ -105,9 +120,21 @@ function PopulateTree(tree, currentTable, parent)
         end
     else
         local newTree = tree:AddTree(tostring(currentTable))
+        -- newTree.IDContext = tostring(tree.Label) .. tostring(traversalIndex)
         newTree.Bullet = true
+        -- table.insert(traversalTree, newTree)
+        -- _P("Added ", traversalTree[traversalIndex].Label, " to IDContext: ", traversalTree[traversalIndex].IDContext)
+        -- traversalIndex = traversalIndex+1
     end
 end
+
+
+-- for i=1, #traversalTree do
+--     traversalTree[i].OnClick = function()
+--         _P("OnClick triggered on Treenode: ", traversalTree[i].IDContext)
+--         populateChildren(traversalTree[traversalIndex], dump, entityTree.Label)
+--     end
+-- end
 
 
 -- function PopulateTree(tree, currentTable)
@@ -151,9 +178,9 @@ end
 -- end
 
 
-local rootRow
-local rootCell
-local rootTree
+local initRootRow
+local initRootCell
+local initRootTree
 
 function ReturnInitRootRow()
     return initRootRow
@@ -204,7 +231,7 @@ function populateChildren(tree, currentTable, treeLabelToPopulate)
 end
 
 
-local doOnce = 0
+local doOnce = 0 -- A "Do Once" for InitializeTree
 -- initializes a tab with all components as trees and subtrees
 --@param tab TabItem - name of the tab that the components will be displayed under
 function InitializeTree(tab, filteredTable)
@@ -218,54 +245,38 @@ function InitializeTree(tab, filteredTable)
 
     -- Decide what to do for each tab
     if tab.Label == "Mouseover" then
+        _P("--------------------------USING MOUSEOVER TAB--------------------------")
         if activatedFilter == true then
             dump = filteredTable
         else
             dump = getMouseover()
             setCopiedTable(tab.Label,deepCopy(dump))
         end        
-        -- Performing a deep copy of the dump
-        -- _P("Deep Copy")
-        --_D(copiedTable)
-
-        -- _P("Dump in Mouseover")
-        --_D(GetCopiedTable("Mouseover"))
-
-
-    -- Modifying the copied table to verify independence
-    -- copiedTable.name = "modified"
-    -- if GetPropertyOrDefault(copiedTable.nested, nil) then
-    --     copiedTable.nested.key = "new_value"
-    -- end
-
 
         rowToPopulate = mouseoverTableRow
+
     elseif tab.Label == "Entity" then
+        _P("--------------------------USING ENTITY TAB--------------------------")
         if activatedFilter == true then
             dump = Ext.Entity.Get(getSavedEntity()):GetAllComponents()
         else
             dump = Ext.Entity.Get(getEntityUUID()):GetAllComponents()
+            Ext.IO.SaveFile("entityDump.json", Ext.DumpExport(dump))
             setSavedEntity(getEntityUUID())
-            -- _P("----------------")
-            -- _P("Collect Garbage")
-            -- collectgarbage()
-            -- _P("----------------")
-            -- setCopiedTable(tab.Label,deepCopy(dump))
-            -- _P("----------------")
-            -- _P("Collect Garbage")
-            -- collectgarbage()
-            -- _P("----------------")
         end  
+
+        -- setCopiedTable(tab.Label,deepCopy(dump)) -- STACKOVERFLOW !!!!!!!!!!!
         rowToPopulate = entityTableRow
-    elseif tab.Label == "VisualBank" then
-        if activatedFilter == true then
-            dump = filteredTable
-        else
-            Ext.Net.PostMessageToServer("RequestCharacterVisual", getEntityUUID())
-            dump = GetCharacterVisual()
-            setCopiedTable(tab.Label,deepCopy(dump))
-        end  
-        rowToPopulate = visualTableRow
+
+    -- elseif tab.Label == "VisualBank" then
+    --     if activatedFilter == true then
+    --         dump = filteredTable
+    --     else
+    --         Ext.Net.PostMessageToServer("RequestCharacterVisual", getEntityUUID())
+    --         dump = GetCharacterVisual()
+    --         setCopiedTable(tab.Label,deepCopy(dump))
+    --     end  
+    --     rowToPopulate = visualTableRow
     end
         
     -- Get initial root for deletion of previous dump
@@ -273,28 +284,26 @@ function InitializeTree(tab, filteredTable)
     local initRootCell = ReturnInitRootCell()
     local initRootTree = ReturnInitRootTree()
 
-
+    _P("--------- POPULATING", tab.Label, "with", dump, "in tree" , initRootTree, "---------")
 
     -- Destroy previous dump if it exist, else create new initial one
     if activatedFilter == false then
-        if initRootTree then
+        if initRootTree ~= nil then
+
             -- Remove leftover tree
             initRootCell:RemoveChild(initRootTree.Handle)
             -- Create new tree
             local rootTree = initRootCell:AddTree(tab.Label)
             setInitRootTree(rootTree)
+
             PopulateTree(rootTree, dump, nil)
 
-            if tab.Label == "Entity" then
-                setSavedEntityTree(rootTree)
-                local entityTree = getSavedEntityTree()
-                entityTree.OnClick = function()
-                    _P("OnClick EntityTree")
-                    entityTree:populateChildren()
-                    populateChildren(entityTree, dump, entityTree.Label)
-        
-                end
-            end
+            -- if tab.Label == "Entity" then
+            --     _P("Populating Entitytree")
+
+            --     setSavedEntityTree(rootTree)
+            --     local entityTree = getSavedEntityTree()
+            -- end
         else
             -- Get row, then create cell/tree and populate it, also serialize the dump
             local rootRow = rowToPopulate
@@ -304,30 +313,43 @@ function InitializeTree(tab, filteredTable)
             setInitRootCell(rootCell)
             setInitRootTree(rootTree)
             PopulateTree(rootTree, dump, nil)
+            traversalIndex = 1
         end
     else
+        -- This should only occur when the search function is used
         _P("Filter Activated, remove old tree and refresh with filtered version:")
-        initRootCell:RemoveChild(initRootTree.Handle)
+
+        -- initRootCell:RemoveChild(initRootTree.Handle)
+
         -- Create new tree
-        local rootTree = initRootCell:AddTree(tab.Label)
+        local rootTree = initRootCell[2]:AddTree(tab.Label)
         setInitRootTree(rootTree)
         PopulateTree(rootTree, dump)
-   
+        traversalIndex = 1
     end
 
 
     if doOnce == 0 then
     -- Create dump info sidebar
-        mouseoverDumpInfo = mouseoverTableRow:AddCell():AddText("Test")
+        mouseoverDumpInfo = mouseoverTableRow:AddCell():AddText("Pre-Populate")
+        entityDumpInfo = entityTableRow:AddCell():AddText("Select Component of your choice \nto populate this field with its actual code.")
         doOnce = doOnce+1
     end
-    mouseoverDumpInfo.Label = Ext.DumpExport(getMouseover())
+
+    if tab.Label == "Mouseover" then
+        mouseoverDumpInfo.Label = Ext.DumpExport(getMouseover())
+    elseif tab.Label == "Entity" then
+        entityDumpInfo.Label = Ext.DumpExport(Ext.Entity.Get(getEntityUUID()):GetAllComponents())
+    end
     
     ---- TODO fix this
     -- if tab    
     -- else
     --     print(tab ," is not a recognized tab") 
     -- end
+
+    -- _P(traversalTree[3])
+    -- _D(traversalTree)
 end
 
 

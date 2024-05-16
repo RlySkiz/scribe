@@ -26,7 +26,6 @@ entityTable = entityTab:AddTable("",2)
 entityTable.ScrollY = true
 entityTableRow = entityTable:AddRow("")
 -- entityDumpTree = entityTableRow:AddCell():AddTree("Entity")
-entityDumpInfo = entityTableRow:AddCell():AddText("")
 
 -- local entityTree = getSavedEntityTree()
 -- if entityTree.
