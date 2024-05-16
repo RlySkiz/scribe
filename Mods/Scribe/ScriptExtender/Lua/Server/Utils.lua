@@ -1,3 +1,12 @@
+--------------------------------------------------------------------------------------
+--
+--
+--                                      USEFUL FUNCTIONS
+--
+--
+---------------------------------------------------------------------------------------
+
+
 
 --- Retrieves the value of a specified property from an object or returns a default value if the property doesn't exist.
 -- @param obj           The object from which to retrieve the property value.
@@ -12,14 +21,3 @@ function GetPropertyOrDefault(obj, propertyName, defaultValue)
         return defaultValue
     end
 end
-
--- Measures the true size of a table, considering both sequential and non-sequential keys
--- @param table table    -       table to count
--- @return int           -       size of the table
--- function TableSize(table)
---     local count = 0
---     for _ in pairs(table) do
---         count = count + 1
---     end
---     return count
--- end
