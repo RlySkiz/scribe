@@ -20,20 +20,18 @@ function PopulateTree(tree, currentTable)
     success, iterator = pcall(pairs, currentTable)
     if success == true and (type(currentTable) == "table" or type(currentTable) == "userdata") then
         for label,content in pairs(currentTable) do
-            if parent == nil or (label == parent) then
-                if content then
-                    -- special case for empty table
-                    local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
-                    if stringify == "{}" then
-                        local newTree = tree:AddTree(tostring(label))
-                        newTree.Bullet = true                   
-                    else
-                        local newTree = tree:AddTree(tostring(label))
-                    end
+            if content then
+                -- special case for empty table
+                local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
+                if stringify == "{}" then
+                    local newTree = tree:AddTree(tostring(label))
+                    newTree.Bullet = true                   
                 else
                     local newTree = tree:AddTree(tostring(label))
-                    newTree.Bullet = true
                 end
+            else
+                local newTree = tree:AddTree(tostring(label))
+                newTree.Bullet = true
             end
 
         end
