@@ -14,15 +14,6 @@
 --                                       Listeners
 -------------------------------------------------------------------------------------------------
 
-local function setTreeClickFunctionality(treeRoot)
-    local mouseover = GetSavedMouseover()
-    for i=1, #treeRoot.Children do
-        local node = treeRoot.Children[i]
-        node.OnClick = function()
-            PopulateTree(node, mouseover .. "." .. node.Label)
-        end
-    end
-end
 
 Ext.Events.KeyInput:Subscribe(function (e)
     if e.Event == "KeyDown" and e.Repeat == false then
@@ -37,7 +28,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
         if e.Key == "NUM_3" then
             InitializeTree(MouseoverTab)
             -- _D(Tabbar.Children[1].Children[5].Children[1]) -- Mouseover Tablerow
-            setTreeClickFunctionality(Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1])
+            --populateChildrenOnClick(GetMouseOverRoot())
             -- InitializeTree(EntityTab)
             -- InitializeTree(VisualTab)
         end

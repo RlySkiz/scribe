@@ -18,8 +18,7 @@ STRINGIFY_OPTIONS = {
                     }
 
 
-
-                    
+   
 
 --------------------------------------------------------------------------------------------
 --                                     Getters and Setters
@@ -55,6 +54,32 @@ function getUUIDFromUserdata(mouseover)
         _P("Not an entity")
     end
 end
+
+
+
+-- will break when IMGUI window is changed
+--@return mouseOverRoot tree
+function GetMouseOverRoot()
+    local mouseoverTree = Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]
+    return mouseoverTree
+end
+
+-- will break when IMGUI window is changed
+--@return entityRoot tree
+function GetEntityRoot()
+    local entityTree = Tabbar.Children[2].Children[6].Children[1].Children[1].Children[1]
+    return entityTree
+end
+
+
+-- will break when IMGUI window is changed
+--@return visualRoot tree
+function GetVisualRoot()
+    local visualTree = Tabbar.Children[3].Children[1].Children[1].Children[1].Children[1]
+    return visualTree
+end
+
+
 
 
 

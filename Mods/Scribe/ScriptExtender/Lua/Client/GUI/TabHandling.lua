@@ -170,6 +170,20 @@ end
 --                                      Main Methods
 -------------------------------------------------------------------------------------------------
 
+-- prints the labels
+-- temporary function, can be deleted
+local function printLabel(tree)
+    success, iterator = pcall(pairs, tree)
+    if success == true and (type(tree) == "table" or type(tree) == "userdata") then
+        for x,y in pairs(tree) do
+            if x == "Label" then
+                print(y)
+            end
+            printLabel(y)
+        end
+    end
+end
+
 
 -- initializes a tab with all components as trees and subtrees
 --@param tab TabItem   - name of the tab that the components will be displayed under
@@ -188,7 +202,9 @@ function InitializeTree(tab)
     setInitRootTree(rootTree)
 
     PopulateTree(rootTree, dump)
-    _D(Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]) -- MouseoverTab.MouseoverTable.MouseoverTableRow.Cell.TreeRoot
+    local mouseOverRoot = GetMouseOverRoot()
+    --printLabel(mouseOverRoot)
+
     -- table.insert(savedNodes, TreeToNode(tab.Label, dump))
 
     if doOnce == 0 then
@@ -204,6 +220,7 @@ function InitializeTree(tab)
         entityDumpInfo.Label = Ext.DumpExport(Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())):GetAllComponents())
     end
     
+
 end
 
 
