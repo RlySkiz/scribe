@@ -12,54 +12,54 @@
 --                                          Methods
 ---------------------------------------------------------------------------------------
 
--- finds a value based on the key in a tree
---@param tree tree - the tree to be searched
---@return value any - the value that matches the search term
-local function find(searchTerm, tree)
 
+
+-- finds a value based on the key in a tree
+-- @param tree table - the tree to be searched
+-- @param searchTerm any - the value to be searched
+-- @return value any - the value that matches the search term
+local function find(child, searchTerm, tree)
     success, iterator = pcall(pairs, tree)
     if success == true and (type(tree) == "table" or type(tree) == "userdata") then
-        for label,content in pairs(tree) do
-            _P("Checking if ", label , " == ", searchTerm)
+        for label, content in pairs(tree) do
+            --_P("Checking if ", label, " == ", searchTerm)
             if label == searchTerm then
-                _P("SUCCESS")
-                _P("RETURNING ", content)
+                _P(" Found content is ", content)
+                PopulateTree(child,content)
                 return content
-                
             else
-                return find(searchTerm, content)
+                local result = find(searchTerm, content)
             end
         end
+    else
+        if tree == searchTerm then
+            return tree
+        end
     end
-    return nil
 end
-
 
 -- Adds the OnClick function that populates all direct descendandts of a tree
 --@param treeRoot tree - parent
 local function populateChildrenOnClick(treeRoot)
-    _P("Called populateChildrenOnClick")
 
-
-    local mouseover = GetSavedMouseover()
+    -- TODO - make variable, we need more than just mouseover
+    local mouseover = GetCopiedTable("Mouseover")
 
     for i=1, #treeRoot.Children do
         
         local child = treeRoot.Children[i]
-        local childLabel = child["Label"]
-        _P("childLabel ", childLabel)
-        _P(find(childLabel, mouseover))
+        local childLabel = child.Label
+
+        mouseoverContent = find(child, childLabel, mouseover)
+
+        _P("Done with iteration ", i)
 
         -- if child label matches any mouseover label then 
+        -- populate child with corresponding mouseOverContent
 
-
-
-        --_D(child)
         child.OnClick = function()
-            --local mouseoverComponent = GetPropertyOrDefault(mouseover, node.Label, nil)
-            local label = child.Label
-            _P("mouseoverComponent ", mouseoverComponent)
-            PopulateTree(child, mouseoverComponent)
+
+            --PopulateTree(child, mouseoverContent)
         end
     end
 end
@@ -97,7 +97,7 @@ function PopulateTree(tree, currentTable)
 
     end
     -- Add OnClickFunctionality
-    populateChildrenOnClick(tree)
+    --populateChildrenOnClick(tree)
 end
 
 

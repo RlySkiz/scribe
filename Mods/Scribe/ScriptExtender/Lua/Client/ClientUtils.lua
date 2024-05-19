@@ -21,12 +21,24 @@ STRINGIFY_OPTIONS = {
    
 
 --------------------------------------------------------------------------------------------
+--                                     Variables
+--------------------------------------------------------------------------------------------
+
+local savedMouseover
+
+
+--------------------------------------------------------------------------------------------
 --                                     Getters and Setters
----------------------------------------------------------------------------------------------
+----------------------------
+
+-----------------------------------------------------------------
 
 local function setSavedMouseover(mouseover)
-    savedMouseover = {mouseover}
+    savedMouseover = mouseover
 end
+
+
+
 -- returns object under the mouse
 --@return mouseover userdata - userdata of object under the mouse          
 function GetMouseover()
@@ -38,9 +50,12 @@ function GetMouseover()
         _P("No mouseover")
     end 
 end
+
+
+
+
 function GetSavedMouseover()
-    mouseover = savedMouseover
-    return mouseover
+    return savedMouseover
 end
 
 
@@ -146,7 +161,7 @@ end
 -- string.find but not case sensitive
 --@param str1 string       - string 1 to compare
 --@param str2 string  - string 2 to compare
-local function CaseInsensitiveSearch(str1, str2)
+function CaseInsensitiveSearch(str1, str2)
     str1 = string.lower(str1)
     str2 = string.lower(str2)
     local result = string.find(str1, str2, 1, true)
