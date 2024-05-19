@@ -20,6 +20,8 @@
 -- value: table
 local copiedTables = {}
 
+local savedNodes = {}
+
 
 local initRootRow
 local initRootCell
@@ -75,6 +77,10 @@ function GetCopiedTable(label)
     end
     print("[SCRIBE] Error: table doesn't exist")
     return nil    
+end
+
+function GetSavedNodes()
+    return savedNodes
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -133,7 +139,7 @@ local function getAndSaveDump(type)
         -- Entity dump too large, have to save entity instead of dump
         dump = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())):GetAllComponents()
         setSavedEntity(getUUIDFromUserdata(GetMouseover()))
-        
+
     elseif type == "VisualBank" then
         Ext.Net.PostMessageToServer("RequestCharacterVisual", getUUIDFromUserdata(GetMouseover()))
         dump = GetCharacterVisual()
@@ -167,7 +173,7 @@ end
 
 -- initializes a tab with all components as trees and subtrees
 --@param tab TabItem   - name of the tab that the components will be displayed under
-function InitializeTree(tab, filteredTable)
+function InitializeTree(tab)
 
     local dump = getAndSaveDump(tab.Label)
     local rowToPopulate = getRowToPopulate(tab.Label)
@@ -182,10 +188,11 @@ function InitializeTree(tab, filteredTable)
     setInitRootTree(rootTree)
 
     PopulateTree(rootTree, dump)
- 
+    _D(Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]) -- MouseoverTab.MouseoverTable.MouseoverTableRow.Cell.TreeRoot
+    -- table.insert(savedNodes, TreeToNode(tab.Label, dump))
 
     if doOnce == 0 then
-    -- Create dump info sidebar
+        -- Create dump info sidebar
         mouseoverDumpInfo = MouseoverTableRow:AddCell():AddText("Pre-Populate")
         entityDumpInfo = EntityTableRow:AddCell():AddText("Select Component of your choice \nto populate this field with its actual code.")
         doOnce = doOnce+1

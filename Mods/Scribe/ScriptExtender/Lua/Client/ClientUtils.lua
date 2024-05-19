@@ -25,15 +25,23 @@ STRINGIFY_OPTIONS = {
 --                                     Getters and Setters
 ---------------------------------------------------------------------------------------------
 
+local function setSavedMouseover(mouseover)
+    savedMouseover = {mouseover}
+end
 -- returns object under the mouse
 --@return mouseover userdata - userdata of object under the mouse          
 function GetMouseover()
     local mouseover = Ext.UI.GetPickingHelper(1)
     if mouseover ~= nil then
+        setSavedMouseover(mouseover)
         return mouseover
     else
         _P("No mouseover")
     end 
+end
+function GetSavedMouseover()
+    mouseover = savedMouseover
+    return mouseover
 end
 
 

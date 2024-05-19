@@ -10,14 +10,14 @@ Node.__index = Node
 ---@param name string
 ---@param parent node
 ---@param children list
----@param ID string
+---@param IDContext string
 ---@param bullet boolean
-function Node:new(name, parent, children, ID, bullet)
+function Node:new(name, parent, children, IDContext, bullet)
     local instance = setmetatable({
         name = name,
         parent = parent,
         children = children,
-        ID = ID,
+        IDContext = IDContext,
         bullet = bullet,
     }, Node)
     return instance
@@ -72,21 +72,53 @@ end
 --------------------------------------------------------------------------------
 
 
-local ID = 1
+local IDContext = 1
+-- converts a tree to a node using the custom Node class, called by TreeToNode internally
+--@param tree Dump    - original dump to be converted
+--@param parent Node  - parent Node
+local function treeToNodeRecurse(tree, parent)
+    success, iterator = pcall(pairs, tree)
+    if success == true and (type(tree) == "table" or type(tree) == "userdata") then
+        for label,content in pairs(tree) do
+            if content then
+                -- special case for empty table
+                local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
+                if stringify == "{}" then
+                    local child = parent.addChild(Node:new("{}", parent, {}, label.IDContext, 1))
+                    _P("Generated new Node with ID: ", child.IDContext)
+                else
+                    _P(label)
+                    _P(parent)
+                    _P(label.IDContext)
+                    local child = parent.addChild(Node:new(tostring(label), parent, {}, label.IDContext, 1))
+                    _P("Generated new Node with ID: ", child.IDContext)
+                    treeToNodeRecurse(content, child)
+                end
+            else
+                local child = parent.addChild(Node:new(tostring(label), parent, {}, label.IDContext, 0))
+                _P("Generated new Node with ID: ", child.IDContext)
+            end
+        end
+    else
+        local child = parent.addChild(Node:new(tostring(tree), parent, {}, tree.IDContext, 1))
+        _P("Generated new Node with ID: ", child.IDContext)
+    end
+end
 
--- converts a table to a tree using the custom Node class - calls tableToNodeRecurse
---@param rootName str - optional name for the parent, else root is chosen
---@param tbl table    - original table to be converted
+-- converts a table to a tree using the custom Node class - calls treeToNodeRecurse
+--@param treeRoot str - optional name for the parent, else root is chosen
+--@param tree table    - original table to be converted
 --@return tree Node   - the Node with all of the information in the table
-function TableToNode(rootName, tbl)
+function TreeToNode(treeRoot, tree)
 
     local parentName = "root"
-    if rootName then
-        parentName = rootName
+    if treeRoot then
+        parentName = treeRoot
     end
 
-    local parent = Node:new(rootName, {}, 1, 0)
-    tableToNodeRecurse(tbl, parent, 1)
+    local parent = Node:new(treeRoot, {}, 1, 0)
+    _P("Generated new Node with ID: ", parent.IDContext)
+    treeToNodeRecurse(tree, parent, 1)
 
     -- reset ID for next function call
     ID = 1
@@ -97,29 +129,7 @@ end
 
 
 
--- converts a table to a tree using the custom Node class, called by tableToNode internally
---@param tbl table    - original table to be converted
---@param parent Node  - parent Node
---@return tree Node   - the Node with all of the information in the table
-local function tableToNodeRecurse(tbl, parent)
-    ID =  ID + 1
-    success, iterator = pcall(pairs, tbl)
-    if success == true and (type(tbl) == "table" or type(tbl) == "userdata") then
-        for label,content in pairs(tbl) 
-            if content then
-                -- special case for empty table
-                local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
-                if stringify == "{}" then
-                    parent.addChild(Node:new("{}", parent, {},ID , 1))    
-                else
-                    local child = parent.addChild(Node:new(tostring(label), parent, {},ID , 0))    
-                    tableToNodeRecurse(label, content, child, ID)   
-                end
-            else
-                parent.addChild(Node:new(tostring(label), parent, {},ID , 1))    
-            end
-        end
-    else
-        parent.addChild(Node:new(tostring(tableToNode), parent, {},ID , 1))    
-    end
-end
+
+-- imguiobj.Label -- visual name (editable)
+-- imguiobj.Handle -- specific numbercombination assigned on creation
+-- imguiobj.IDContext -- editable id

@@ -2,17 +2,27 @@
 --
 --
 --                                      Main Class
---
+--                                 Interaction Handling
 --
 ---------------------------------------------------------------------------------------
 
 
+-- local mouseoverRoot = (Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]) -- MouseoverTab.MouseoverTable.MouseoverTableRow.Cell.TreeRoot
 
 
 ---------------------------------------------------------------------------------------------------
 --                                       Listeners
 -------------------------------------------------------------------------------------------------
 
+local function setTreeClickFunctionality(treeRoot)
+    local mouseover = GetSavedMouseover()
+    for i=1, #treeRoot.Children do
+        local node = treeRoot.Children[i]
+        node.OnClick = function()
+            PopulateTree(node, mouseover .. "." .. node.Label)
+        end
+    end
+end
 
 Ext.Events.KeyInput:Subscribe(function (e)
     if e.Event == "KeyDown" and e.Repeat == false then
@@ -26,8 +36,11 @@ Ext.Events.KeyInput:Subscribe(function (e)
         -- Displays Dump in IMGUI windows
         if e.Key == "NUM_3" then
             InitializeTree(MouseoverTab)
-            InitializeTree(EntityTab)
-            InitializeTree(VisualTab)
+            -- _D(Tabbar.Children[1].Children[5].Children[1]) -- Mouseover Tablerow
+            setTreeClickFunctionality(Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1])
+            -- InitializeTree(EntityTab)
+            -- InitializeTree(VisualTab)
         end
     end
 end)
+
