@@ -6,9 +6,13 @@
 --
 ---------------------------------------------------------------------------------------
 
+EntityVisualTab = Tabbar:AddTabItem("EntityVisual")
 
+EntityVisualTab:AddText("EntityVisual UUID: ")
+EntityVisualUUID = EntityVisualTab:AddText("")
+EntityVisualUUID.SameLine = true
 
-CharacterVisualTab = Tabbar:AddTabItem("CharacterVisual")
+EntityVisualTab:AddSeparator()
 
-CharacterVisualTab:AddText("Dump")
-DumpCharacterVisualArea = CharacterVisualTab:AddText("")
+EntityVisualTable = EntityVisualTab:AddTable("",2)
+EntityVisualTable.ScrollY = true

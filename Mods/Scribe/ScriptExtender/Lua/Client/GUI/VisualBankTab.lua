@@ -1,19 +1,19 @@
 --------------------------------------------------------------------------------------
 --
 --
---                                       Entity Visual Bank Tab
+--                                   VisualBank Tab
 --
 --
 ---------------------------------------------------------------------------------------
 
 
-VisualTab = Tabbar:AddTabItem("VisualBank")
+VisualBankTab = Tabbar:AddTabItem("VisualBank")
 
+VisualBankTab:AddText("VisualBank UUID: ")
+VisualBankUUID = VisualBankTab:AddText("")
+VisualBankUUID.SameLine = true
 
-VisualTab:AddSeparator()
+VisualBankTab:AddSeparator()
 
-VisualTable = VisualTab:AddTable("",2)
-VisualTable.ScrollY = true
-VisualTableRow = VisualTable:AddRow("")
-VisualDumpTree = VisualTableRow:AddCell():AddTree("VisualResource")
-VisualDumpInfo = VisualTableRow:AddCell():AddText("")
+VisualBankTable = VisualBankTab:AddTable("",2)
+VisualBankTable.ScrollY = true

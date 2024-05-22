@@ -9,7 +9,6 @@
 
 -- local mouseoverRoot = (Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]) -- MouseoverTab.MouseoverTable.MouseoverTableRow.Cell.TreeRoot
 
-
 ---------------------------------------------------------------------------------------------------
 --                                       Listeners
 -------------------------------------------------------------------------------------------------
@@ -26,11 +25,10 @@ Ext.Events.KeyInput:Subscribe(function (e)
 
         -- Displays Dump in IMGUI windows
         if e.Key == "NUM_3" then
-            InitializeTree(MouseoverTab)
-            -- _D(Tabbar.Children[1].Children[5].Children[1]) -- Mouseover Tablerow
-            --populateChildrenOnClick(GetMouseOverRoot())
-            -- InitializeTree(EntityTab)
-            -- InitializeTree(VisualTab)
+            -- GetAndSaveData("Mouseover")
+            InitializeScribeTree("Mouseover")
+            InitializeScribeTree("Entity")
+            -- InitializeScribeTree(VisualTab)
         end
     end
 end)

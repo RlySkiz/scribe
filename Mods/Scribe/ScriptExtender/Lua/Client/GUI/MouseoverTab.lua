@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------------
 --
 --
---                                       Mouseover Tab
+--                                   Mouseover Tab
 --
 --
 ---------------------------------------------------------------------------------------
@@ -12,69 +12,51 @@ Tabbar = W:AddTabBar("")
 
 MouseoverTab = Tabbar:AddTabItem("Mouseover")
 
-MouseoverTab:AddText("Num_1 = dump | Num_2 = dump file | Num_3 = test stuff")
-MouseoverSearchInput = MouseoverTab:AddInputText("")
-MouseoverSearchInput.AutoSelectAll = true
-MouseoverSearchInput.Text = "Test"
-MouseoverSearchInput.IDContext = "mouseoverInputTextField"
-MouseoverSearchButton = MouseoverTab:AddButton("Search")
-MouseoverSearchButton.SameLine = true
-
-------------- Fucking fuck why do InputText fields not work ---------------
-
--- button1 = MouseoverTab:AddButton("Visual")
--- button1.SameLine = true
--- button1.OnClick = function()
---     MouseoverSearchInput.Text = button1.Label
---     MouseoverSearchInput.OnChange()
--- end
--- button2 = MouseoverTab:AddButton("UUID")
--- button2.SameLine = true
--- button2.OnClick = function()
---     MouseoverSearchInput.Text = button2.Label
---     MouseoverSearchInput.OnChange()
--- end
--- button3 = MouseoverTab:AddButton("Name")
--- button3.SameLine = true
--- button3.OnClick = function()
---     MouseoverSearchInput.Text = button3.Label
---     MouseoverSearchInput.OnChange()
--- end
--- button4 = MouseoverTab:AddButton("Mapkey")
--- button4.SameLine = true
--- button4.OnClick = function()
---     MouseoverSearchInput.Text = button4.Label
---     MouseoverSearchInput.OnChange()
--- end
--- clearbutton = MouseoverTab:AddButton("Clear")
--- clearbutton.SameLine = true
--- clearbutton.OnClick = function()
---     MouseoverSearchInput.Text = ""
---     MouseoverSearchInput.OnChange()
--- end
----------------------------------------------------------------------------
+MouseoverTab:AddText("Num_2 = mouseover/entity file dump | Num_3 = test stuff")
+-- MouseoverSearchInput = MouseoverTab:AddInputText("")
+-- MouseoverSearchInput.AutoSelectAll = true
+-- MouseoverSearchInput.Text = "Test"
+-- MouseoverSearchInput.IDContext = "mouseoverInputTextField"
+-- MouseoverSearchButton = MouseoverTab:AddButton("Search")
+-- MouseoverSearchButton.SameLine = true
 
 MouseoverTab:AddSeparator()
 
 MouseoverTable = MouseoverTab:AddTable("",2)
 MouseoverTable.ScrollY = true
-MouseoverTableRow = MouseoverTable:AddRow("")
+-- MouseoverTableRow = MouseoverTable:AddRow("")
 
--- function InitializeMouseoverTree()
+    -- Create CCInfoTable about having to enter CharacterCreation/Mirror to load Vanilla Icons
+    -- local header = GetSCRIBETABLE(tab)
+    -- local CCInfoTable = header:AddTable("", 2)
+    -- local CCInfoTableRow = CCInfoTable:AddRow()
+    -- local CCInfoTableCell = CCInfoTableRow:AddCell()
+    -- local CCInfoTableCell2 = CCInfoTableRow:AddCell()
+    -- local CCInfoText = CCInfoTableCell:AddText("Vanilla Icon Textures are only accessible\nif you have been in Character Creation/Mirror\nat least once after installing this mod.\nThis Button will automate it. (Takes roughly 3 seconds)")
+    -- local CCInfoButton = CCInfoTableCell2:AddButton("Load Vanilla Icons")
+    
+    -- CCInfoButton.OnClick = function()
+    --     _P("[DataHandling.lua.lua] - CCButton Pressed - Initialize Character Creation/Mirror to load Vanilla Icons!")
+    --     CCInfoButton.Visible = false
+    --     CCInfoText.Visible = false
+    --     CCInfoTableCell2.Visible = false
+    --     CCInfoTableCell.Visible = false
+    --     CCInfoTableRow.Visible = false
+    --     CCInfoTable.Visible = false
+    -- end
 
--- end
 
 --------------------  Functionality  -----------------------
 
-if mouseoverDumpTree ~= nil then
-    mouseoverDumpTree.OnClick = function()
-        if mouseoverDumpTree.Selected then
-            mouseoverDumpTree.Selected = false
-        else
-            mouseoverDumptree.Selected = true
-        end
-    end
-end
+-- if mouseoverDumpTree ~= nil then
+--     mouseoverDumpTree.OnClick = function()
+--         if mouseoverDumpTree.Selected then
+--             mouseoverDumpTree.Selected = false
+--         else
+--             mouseoverDumptree.Selected = true
+--         end
+--     end
+-- end
 
 -- Quicksearch
 -- MouseoverSearchInput.OnChange = function()
@@ -88,19 +70,19 @@ end
 -- end
 
 -- Buttonsearch
-MouseoverSearchButton.OnClick = function()
-    _P("Search Button Clicked")
-    _P("Searching for: ", MouseoverSearchInput.Text)
+-- MouseoverSearchButton.OnClick = function()
+--     _P("Search Button Clicked")
+--     _P("Searching for: ", MouseoverSearchInput.Text)
 
-    sort = Sorting:new()
+--     sort = Sorting:new()
 
-    local ogDump = GetCopiedTable(MouseoverTab.Label, nil)
-    newMouseoverDump = sort:filter(MouseoverSearchInput.Text, ogDump)
+--     local ogDump = GetCopiedTable(MouseoverTab.Label, nil)
+--     newMouseoverDump = sort:filter(MouseoverSearchInput.Text, ogDump)
 
-    if #newMouseoverDump == 0 then
-        newMouseOverDump = "No results found"
-    end
+--     if #newMouseoverDump == 0 then
+--         newMouseOverDump = "No results found"
+--     end
 
-    InitializeTree(MouseoverTab, newMouseoverDump)
-    mouseoverDumpInfo.Label = Ext.DumpExport(newMouseoverDump)
-end
+--     InitializeTree(MouseoverTab, newMouseoverDump)
+--     mouseoverDumpInfo.Label = Ext.DumpExport(newMouseoverDump)
+-- end

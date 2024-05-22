@@ -33,9 +33,9 @@ local savedMouseover
 
 -----------------------------------------------------------------
 
-local function setSavedMouseover(mouseover)
-    savedMouseover = mouseover
-end
+-- local function setSavedMouseover(mouseover)
+--     savedMouseover = mouseover
+-- end
 
 
 
@@ -44,10 +44,10 @@ end
 function GetMouseover()
     local mouseover = Ext.UI.GetPickingHelper(1)
     if mouseover ~= nil then
-        setSavedMouseover(mouseover)
+        -- setSavedMouseover(mouseover)
         return mouseover
     else
-        _P("No mouseover")
+        _P("[ClientUtils.lua] - GetMouseover - No mouseover!")
     end 
 end
 
@@ -66,36 +66,55 @@ function getUUIDFromUserdata(mouseover)
     if entity ~= nil then
         return Ext.Entity.HandleToUuid(entity)
     else
-        _P("Not an entity")
+        _P("[ClientUtils.lua] - getUUIDFromUserdata(mouseover) - Not an entity!")
     end
 end
 
 
 
--- will break when IMGUI window is changed
---@return mouseOverRoot tree
-function GetMouseOverRoot()
-    local mouseoverTree = Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]
-    return mouseoverTree
-end
+-- -- will break when IMGUI window is changed
+-- --@return mouseOverRoot tree
+-- function GetMouseoverRootTree()
+--     local mouseoverTree = Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell.Tree
+--     _P(mouseoverTree)
+--     return mouseoverTree
+-- end
 
--- will break when IMGUI window is changed
---@return entityRoot tree
-function GetEntityRoot()
-    local entityTree = Tabbar.Children[2].Children[6].Children[1].Children[1].Children[1]
-    return entityTree
-end
+-- -- will break when IMGUI window is changed
+-- --@return entityRoot tree
+-- function GetEntityRootTree()
+--     local entityTree = Tabbar.Children[2].Children[6].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell.Tree
+--     return entityTree
+-- end
 
+-- -- will break when IMGUI window is changed
+-- --@return visualRoot tree
+-- function GetVisualRootTree()
+--     local visualTree = Tabbar.Children[3].Children[1].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell.Tree
+--     return visualTree
+-- end
 
--- will break when IMGUI window is changed
---@return visualRoot tree
-function GetVisualRoot()
-    local visualTree = Tabbar.Children[3].Children[1].Children[1].Children[1].Children[1]
-    return visualTree
-end
+-- -- will break when IMGUI window is changed
+-- --@return mouseOverRoot tree
+-- function GetMouseoverRootCell()
+--     local mouseoverCell = Tabbar.Children[1].Children[5].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell
+--     _P(mouseoverCell)
+--     return mouseoverCell
+-- end
 
+-- -- will break when IMGUI window is changed
+-- --@return entityRoot tree
+-- function GetEntityRootCell()
+--     local entityCell = Tabbar.Children[2].Children[6].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell
+--     return entityCell
+-- end
 
-
+-- -- will break when IMGUI window is changed
+-- --@return visualRoot tree
+-- function GetVisualRootCell()
+--     local visualCell = Tabbar.Children[3].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell
+--     return visualCell
+-- end
 
 
 --------------------------------------------------------------------------------------------
@@ -132,29 +151,29 @@ end
 -- Perform a deep copy of a table - necessary when lifetime expires
 --@param    orig table - orignial table
 --@return   copy table - copied table
-function deepCopy(orig)
-    local copy = {}
+-- function deepCopy(orig)
+--     local copy = {}
 
-    success, iterator = pcall(pairs, orig)
-    if success == true and (type(orig) == "table" or type(orig) == "userdata") then
+--     success, iterator = pcall(pairs, orig)
+--     if success == true and (type(orig) == "table" or type(orig) == "userdata") then
 
-        for label, content in pairs(orig) do
+--         for label, content in pairs(orig) do
 
-            if content then
-                 copy[deepCopy(tostring(label))] = deepCopy(content)
-            else
-                copy[deepCopy(label)] = "nil"
-            end
+--             if content then
+--                  copy[deepCopy(tostring(label))] = deepCopy(content)
+--             else
+--                 copy[deepCopy(label)] = "nil"
+--             end
 
-        end
-        if copy and (not #copy == 0) then
-            setmetatable(copy, deepCopy(getmetatable(orig)))
-        end
-    else
-        copy = orig
-    end
-    return copy
-end
+--         end
+--         if copy and (not #copy == 0) then
+--             setmetatable(copy, deepCopy(getmetatable(orig)))
+--         end
+--     else
+--         copy = orig
+--     end
+--     return copy
+-- end
 
 
 

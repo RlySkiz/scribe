@@ -23,6 +23,21 @@ Ext.Events.NetMessage:Subscribe(function(e)
 
     ---------------------------------------------------------------------------
     --
+    --                                Send Entity Data
+    --
+    ---------------------------------------------------------------------------
+
+
+      if (e.Channel == "RequestEntityData") then
+        _P("Received RequestEntityData")
+        local entity = e.Payload
+        local dump = Ext.Entity.Get(entity):GetAllComponents()
+        Ext.Net.BroadcastMessage("ReceiveEntityData", Ext.Json.Stringify(dump))
+    end
+
+
+    ---------------------------------------------------------------------------
+    --
     --                       Get HostCharacter
     --
     ---------------------------------------------------------------------------
