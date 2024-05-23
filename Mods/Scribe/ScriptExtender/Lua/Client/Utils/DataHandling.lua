@@ -364,7 +364,7 @@ local function populateScribeTree(tree, currentTable)
             if content then
                 -- special case for empty table
                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
-                if stringify == "{}" then
+                if stringify == "{}" or stringify == "[]" then
                     -- _P("[3]Content was: {}")
                     local newTree = tree:AddTree(tostring(label))
                     addTreeOnClick(newTree)
