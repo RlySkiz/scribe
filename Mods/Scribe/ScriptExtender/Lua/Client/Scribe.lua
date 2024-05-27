@@ -28,7 +28,11 @@ Ext.Events.KeyInput:Subscribe(function (e)
             -- GetAndSaveData("Mouseover")
             InitializeScribeTree("Mouseover")
             InitializeScribeTree("Entity")
-           -- InitializeScribeTree("VisualBank")
+            InitializeScribeTree("Visual")
+            SaveData("VisualBank")
+            -- InitializeScribeTree("VisualBank")
+            -- InitializeScribeTree("Materials")
+            -- InitializeScribeTree("Textures")
         end
     end
 end)

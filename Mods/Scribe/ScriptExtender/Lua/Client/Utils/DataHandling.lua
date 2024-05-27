@@ -39,7 +39,7 @@
 local SCRIBE = {
     ["Mouseover"] = { DATA = {}, TABLE = MouseoverTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Entity"] = { DATA = {}, TABLE = EntityTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    -- ["Entity Visual"] = { DATA = {}, TABLE = EntityVisualTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    ["Visual"] = { DATA = {}, TABLE = VisualTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["VisualBank"] = { DATA = {}, TABLE = VisualBankTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Materials"] = { DATA = {}, TABLE = MaterialsTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Textures"] = { DATA = {}, TABLE = TexturesTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
@@ -280,21 +280,33 @@ end
 local characterVisual
 Ext.Events.NetMessage:Subscribe(function(e) 
     if (e.Channel == "SendCharacterVisualResourceID") then
-        _P("SendCharacterVisualResourceID recieved")
+        -- _P("SendCharacterVisualResourceID recieved")
         local characterVisualResourceID = Ext.Json.Parse(e.Payload)
-        _P(characterVisualResourceID)
+        -- _P(characterVisualResourceID)
         local characterVisual = Ext.Resource.Get(characterVisualResourceID, "CharacterVisual")
-        data = characterVisual
-        SCRIBE["VisualBank"].DATA = DeepCopy(data)
+        SCRIBE["VisualBank"].DATA = DeepCopy(characterVisual)
+        -- _P("Saved VisualBank")
+        -- _D(SCRIBE["VisualBank"].DATA)
+        InitializeScribeTree("VisualBank")
     end
 end)
 
+-- returns the DATA from the corresponding dump (sorted)
+--@param tab string - tab name ex: "Mouseover"
+--@return     table - unsorted data
+--@return     table - sorted table
+local function getData(tab)
+    if tab == "VisualBank" then
+        -- _P("Retrieved VisualBank")
+        -- _D(SCRIBE[tab].DATA)
+    end
+    return SCRIBE[tab].DATA, sortData(SCRIBE[tab].DATA)
+    
+end
 
-
--- Retrieves the dump of a certain type and saves a copy
--- @param tab SCRIBE.tab
--- @return table dump
-function GetAndSaveData(tab)
+-- saves the dump data in the corresponding list
+--@param tab string - tab name ex: "Mouseover"
+function SaveData(tab)
     local data
 
     if tab == "Mouseover"  then
@@ -302,20 +314,17 @@ function GetAndSaveData(tab)
         SCRIBE[tab].DATA = DeepCopy(data)
     elseif tab == "Entity" then
         data = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())):GetAllComponents()
-        -- _D(data)
+        SCRIBE[tab].DATA = data
+    elseif tab == "Visual" then
+        data = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())).Visual
         SCRIBE[tab].DATA = data
     elseif tab == "VisualBank" then
         local uuid = getUUIDFromUserdata(GetMouseover())
-        _P("UUID send for RequestCharacterVisualResourceID", uuid)
+        -- _P("UUID send for RequestCharacterVisualResourceID", uuid)
         Ext.Net.PostMessageToServer("RequestCharacterVisualResourceID", Ext.Json.Stringify(uuid))
-        _P(uuid)
-        _P("RequestCharacterVisual send")
-        -- data = characterVisual
-        -- SCRIBE[tab].DATA = DeepCopy(data)
-        --break
+        -- gets saved by listener
+
     end
-    
-    return sortData(data)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -349,7 +358,6 @@ end
 --@param str          string 
 --@return translation string
 local function addLoca(str)
-    _P("adding loca")
     local translation = str
     local suffix = Ext.Loca.GetTranslatedString(str)
     if suffix ~= "" then
@@ -358,7 +366,7 @@ local function addLoca(str)
     return translation
 end
 
-
+                
 
 -- TODO - translate locas
 local materialInstances = {}
@@ -369,6 +377,7 @@ populateScribeTree = function(tree, currentTable)
             if content then
                 -- special case for empty table
                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
+                -- TOD: some nodes have a [] but that contains more data -> send into recursion
                 if stringify == "{}" or stringify == "[]" then
                     local newTree = tree:AddTree(tostring(addLoca(label)))
                     local child = newTree:AddTree(tostring(stringify))
@@ -410,8 +419,8 @@ local function populateScribeTreeInitilization(tree, sortedTable)
 
     for index, entry in pairs(sortedTable) do 
 
-        label = entry.key
-        content = entry.value
+        local label = entry.key
+        local content = entry.value
 
         -- special case for empty table
         local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
@@ -448,12 +457,24 @@ local function updateScribeTree(tab)
     InitializeScribeTree(tab)
 end
 
+local previousTab
 function InitializeScribeTree(tab)
+    if tab ~= previousTab then
+        previousTab = tab
+        initializedBefore = false
+    end
     _P("Initializing Tab: ", tab)
     -- _P("initializedBefore = ", initializedBefore)
-    local array,data = GetAndSaveData(tab)
+    if not (tab == "VisualBank") then
+        SaveData(tab)
+    end
+    -- if tab == "VisualBank" then
+    --     data = SCRIBE[tab].DATA
+    -- end
+
 
     -- local data = GetScribeData(tab)
+    -- _P("InitializedBefore? ", initializedBefore)
     if initializedBefore == false then
         local table = GetScribeTable(tab)
         
@@ -466,6 +487,10 @@ function InitializeScribeTree(tab)
         --     _P(data)
         --     _D(data)
         -- end
+
+        -- How to access Column Definitions
+        -- table.ColumnDefs[1] = {IndentEnable = true, NoResize = false}
+
         local tableRow = table:AddRow()
         local rootTreeWrapperCell = tableRow:AddCell()
         local dumpTextWrapperCell = tableRow:AddCell()
@@ -484,20 +509,27 @@ function InitializeScribeTree(tab)
         local dumpTextCell = dumpTextWrapperRow:AddCell()
         
         local rootTree = rootTreeCell:AddTree(tab)
+
+        local data, array = getData(tab)
+
+        -- if tab == "VisualBank" then
+        --         _P("------InitializeScribeTree - Tab VisualBank------")
+        --         _P("DATA")
+        --         _D(data)
+        --         _P("ARRAY")
+        --         _D(array)
+        -- end
+
         local dumpText = dumpTextCell:AddText(Ext.DumpExport(data))
         -- local dumpText = dumpTextCell:AddText(Ext.DumpExport(data))
 
-        
         setScribeRootTree(tab, rootTree)
         setScribeDumpText(tab, dumpText)
 
-
-         -- during the first iteration, due to sorting, we want to discard the label
-       
-
+        -- during the first iteration, due to sorting, we want to discard the label
         populateScribeTreeInitilization(rootTree, array)
-        -- _D(data)
-        --_P("Total trees created: ", totalTrees)
+            -- _D(data)
+            --_P("Total trees created: ", totalTrees)
         totalTrees = 1
 
         -- for i=1, #rootTree.Children do
@@ -505,8 +537,9 @@ function InitializeScribeTree(tab)
         --         populateScribeTree(rootTree.Children[i], data)
         --     end
         -- end
-
+        -- _P("InitializedBefore? ", initializedBefore)
         initializedBefore = true
+        -- _P("InitializedBefore? ", initializedBefore)
     else
         -- _P("initializedBefore = ", initializedBefore)
         -- _P("Updating Tree")
