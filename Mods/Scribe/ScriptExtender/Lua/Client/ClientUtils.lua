@@ -151,29 +151,29 @@ end
 -- Perform a deep copy of a table - necessary when lifetime expires
 --@param    orig table - orignial table
 --@return   copy table - copied table
--- function deepCopy(orig)
---     local copy = {}
+function DeepCopy(orig)
+    local copy = {}
 
---     success, iterator = pcall(pairs, orig)
---     if success == true and (type(orig) == "table" or type(orig) == "userdata") then
+    success, iterator = pcall(pairs, orig)
+    if success == true and (type(orig) == "table" or type(orig) == "userdata") then
 
---         for label, content in pairs(orig) do
+        for label, content in pairs(orig) do
 
---             if content then
---                  copy[deepCopy(tostring(label))] = deepCopy(content)
---             else
---                 copy[deepCopy(label)] = "nil"
---             end
+            if content then
+                 copy[DeepCopy(tostring(label))] = DeepCopy(content)
+            else
+                copy[DeepCopy(label)] = "nil"
+            end
 
---         end
---         if copy and (not #copy == 0) then
---             setmetatable(copy, deepCopy(getmetatable(orig)))
---         end
---     else
---         copy = orig
---     end
---     return copy
--- end
+        end
+        if copy and (not #copy == 0) then
+            setmetatable(copy, DeepCopy(getmetatable(orig)))
+        end
+    else
+        copy = orig
+    end
+    return copy
+end
 
 
 

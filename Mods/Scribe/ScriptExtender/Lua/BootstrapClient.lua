@@ -20,7 +20,7 @@ Ext.Require("Client/Logic/Sorting.lua")
 
 Ext.Require("Client/GUI/MouseoverTab.lua")
 Ext.Require("Client/GUI/EntityTab.lua")
-Ext.Require("Client/GUI/EntityVisualTab.lua")
+-- Ext.Require("Client/GUI/EntityVisualTab.lua")
 Ext.Require("Client/GUI/VisualBankTab.lua")
 Ext.Require("Client/GUI/MaterialsTab.lua")
 Ext.Require("Client/GUI/TexturesTab.lua")

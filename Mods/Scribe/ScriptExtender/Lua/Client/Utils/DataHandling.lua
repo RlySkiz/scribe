@@ -39,7 +39,7 @@
 local SCRIBE = {
     ["Mouseover"] = { DATA = {}, TABLE = MouseoverTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Entity"] = { DATA = {}, TABLE = EntityTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    ["Entity Visual"] = { DATA = {}, TABLE = EntityVisualTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    -- ["Entity Visual"] = { DATA = {}, TABLE = EntityVisualTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["VisualBank"] = { DATA = {}, TABLE = VisualBankTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Materials"] = { DATA = {}, TABLE = MaterialsTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Textures"] = { DATA = {}, TABLE = TexturesTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
@@ -215,17 +215,17 @@ end
 
 -- -- set the entity
 -- --@param entityUUID string
-local savedEntity
-local function setSavedEntity(entityUUID)
-    savedEntity = entityUUID
-end
+-- local savedEntity
+-- local function setSavedEntity(entityUUID)
+--     savedEntity = entityUUID
+-- end
 
 -- -- sets the copied table (deep copy necessary because of lifetime)
 -- --@param label string - label of table that should be saved
 -- --@param dump table   - values
-local function setCopiedTable(label,dump)
-    copiedTables[label] = dump
-end
+-- local function setCopiedTable(label,dump)
+--     copiedTables[label] = dump
+-- end
 
 
 ---------------------------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ end
 --@param    orig table - orignial table
 --@return   copy table - copied table
 -- local copies = 0
--- local function deepCopy(orig)
+-- local function DeepCopy(orig)
 --     _P("Copies til now: ", copies)
 --     copies = copies+1
 --     local copy = {}
@@ -247,14 +247,14 @@ end
 --         for label, content in pairs(orig) do
 
 --             if content then
---                  copy[deepCopy(tostring(label))] = deepCopy(content)
+--                  copy[DeepCopy(tostring(label))] = DeepCopy(content)
 --             else
---                 copy[deepCopy(label)] = "nil"
+--                 copy[DeepCopy(label)] = "nil"
 --             end
 
 --         end
 --         if copy and (not #copy == 0) then
---             setmetatable(copy, deepCopy(getmetatable(orig)))
+--             setmetatable(copy, DeepCopy(getmetatable(orig)))
 --         end
 --     else
 --         copy = orig
@@ -262,34 +262,33 @@ end
 --     return copy
 -- end
 
-local copies = 0
+local function sortData(data)
+    local array = {}
 
-local function deepCopy(orig, copiesTable)
-    -- _P("Copies til now: ", copies)
-    copies = copies + 1
-
-    copiesTable = copiesTable or {}  -- initialize copiesTable if it's nil
-
-    if copiesTable[orig] then
-        return copiesTable[orig]  -- return the already copied reference
+    for key, value in pairs(data)do
+      table.insert(array, {key = key, value = value})
     end
 
-    local copy
-    if type(orig) == "table" then
-        copy = {}
-        copiesTable[orig] = copy  -- store the reference of the copy
+    table.sort(array, function(a, b)
+        return a.key < b.key
+      end)
 
-        for label, content in pairs(orig) do
-            copy[deepCopy(label, copiesTable)] = deepCopy(content, copiesTable)
-        end
-
-        setmetatable(copy, deepCopy(getmetatable(orig), copiesTable))
-    else
-        copy = orig  -- for non-table types, just use the original value
-    end
-
-    return copy
+    return array, data
 end
+
+
+local characterVisual
+Ext.Events.NetMessage:Subscribe(function(e) 
+    if (e.Channel == "SendCharacterVisualResourceID") then
+        _P("SendCharacterVisualResourceID recieved")
+        local characterVisualResourceID = Ext.Json.Parse(e.Payload)
+        _P(characterVisualResourceID)
+        local characterVisual = Ext.Resource.Get(characterVisualResourceID, "CharacterVisual")
+        data = characterVisual
+        SCRIBE["VisualBank"].DATA = DeepCopy(data)
+    end
+end)
+
 
 
 -- Retrieves the dump of a certain type and saves a copy
@@ -300,64 +299,55 @@ function GetAndSaveData(tab)
 
     if tab == "Mouseover"  then
         data = GetMouseover()
-        SCRIBE[tab].DATA =  deepCopy(data)
+        SCRIBE[tab].DATA = DeepCopy(data)
     elseif tab == "Entity" then
         data = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())):GetAllComponents()
         -- _D(data)
-        SCRIBE[tab].DATA =  data
-
-        --Enable this for ServerCharacter Data -- NYI -- Not Worki
-        -- SCRIBE[tab].DATA =  deepCopy(getUUIDFromUserdata(GetMouseover()))
-        -- Ext.Net.PostMessageToServer("RequestEntityData",Ext.Json.Stringify(SCRIBE[tab].DATA))
-        -- _P("[DataHandling.lua] Sending 'RequestEntityData' Event to server with, ", SCRIBE[tab].DATA, "as Payload!")
-        -- Ext.Events.NetMessage:Subscribe(function(e) 
-        --     if (e.Channel == "RecieveEntityData") then
-        --         _P("[DataHandling.lua] Recieved 'RevieceEntityData' Event from server!")
-        --         data = Ext.Json.Parse(e.Payload)
-        --         _D(data)
-        --     end
-        -- end)
+        SCRIBE[tab].DATA = data
     elseif tab == "VisualBank" then
-        Ext.Net.PostMessageToServer("RequestCharacterVisual", getUUIDFromUserdata(GetMouseover()))
-        data = GetCharacterVisual()
-        SCRIBE[tab].DATA =  deepCopy(data)
+        local uuid = getUUIDFromUserdata(GetMouseover())
+        _P("UUID send for RequestCharacterVisualResourceID", uuid)
+        Ext.Net.PostMessageToServer("RequestCharacterVisualResourceID", Ext.Json.Stringify(uuid))
+        _P(uuid)
+        _P("RequestCharacterVisual send")
+        -- data = characterVisual
+        -- SCRIBE[tab].DATA = DeepCopy(data)
+        break
     end
     
-    -- _P("[DataHandling.lua] - GetAndSaveData(tab) - Data dump:")
-    -- _D(data)
-
-    -- Sort the data content
-    -- local sortedData = {}
-    -- local keys = {}
-
-    -- for key in pairs(data) do
-    --     table.insert(keys, key)
-    -- end
-    -- table.sort(keys)
-    -- for _, key in pairs(keys) do
-    --     table.insert(sortedData, key)
-    --     -- sortedData[key] = data[key]
-    -- end
-    -- table.insert(sortedData, data)
-    -- Ext.IO.SaveFile("sortedData.json", Ext.DumpExport(sortedData))
-    -- _D(sortedData)
-
-    return data
+    return sortData(data)
 end
 
 ---------------------------------------------------------------------------------------------------
 --                                      Main Methods
 ---------------------------------------------------------------------------------------------------
 
-local function addTreeOnClick(tree)
+
+-- declared beforehand since they reference each other
+local populateScribeTree
+local addTreeOnClick
+
+-- key: tree
+-- value : bool
+local treeClicked = {}
+
+
+addTreeOnClick = function(tree, currentTable)
     tree.OnClick = function()
-        _P("OnClick")
+        -- Only do the Onclick function once
+        if not treeClicked[tree] then
+            treeClicked[tree] = true
+            populateScribeTree(tree,currentTable)
+        end
     end
 end
 
-local totalTrees = 1
+
+
+
+-- TODO - translate locas
 local materialInstances = {}
-local function populateScribeTree(tree, currentTable)    
+populateScribeTree = function(tree, currentTable)    
     local success, iterator = pcall(pairs, currentTable)
     if success == true and (type(currentTable) == "table" or type(currentTable) == "userdata") then
         for label,content in pairs(currentTable) do
@@ -365,98 +355,68 @@ local function populateScribeTree(tree, currentTable)
                 -- special case for empty table
                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
                 if stringify == "{}" or stringify == "[]" then
-                    -- _P("[3]Content was: {}")
                     local newTree = tree:AddTree(tostring(label))
-                    addTreeOnClick(newTree)
-                    totalTrees = totalTrees+1
-                    newTree.IDContext = totalTrees
-                    -- _P("Creating new tree with IDContext: ", newTree.IDContext)
-                    newTree.Bullet = true
-                    -- _P("Total Trees til now: ", totalTrees)
-                elseif content == "*RECURSION*" then
-                    _P("-------------------------------------------------------------------------")
-                    _P("-------------------------------------------------------------------------")
-                    _P("-------------------------------------------------------------------------")
-                    _P("--------------------------------RECURSION--------------------------------")
-                    _P("-------------------------------------------------------------------------")
-                    _P("-------------------------------------------------------------------------")
-                    _P("-------------------------------------------------------------------------")
-                    _P(label)
-                    _D(content)
+                    local child = newTree:AddTree(tostring(stringify))
+                    child.Bullet = true
+                -- regular case -> recursion    
+                elseif (type(content) == "table") or (type(content) == "userdata") then
                     local newTree = tree:AddTree(tostring(label))
-                    addTreeOnClick(newTree)
-                    totalTrees = totalTrees+1
-                    newTree.IDContext = totalTrees
-                    newTree.Bullet = true
-
-                else
-                    -- _P("-------------------------------------------------------------------------")
-                    -- _P("[ELSE] label is: ", label, " and content is: ", content)
-                    -- _P("[ELSE] type of new label is: ", type(label))
-                    -- _P("[ELSE] type of new content is: ", type(content))
-                    local newTree = tree:AddTree(tostring(label))
-                    addTreeOnClick(newTree)
-                    totalTrees = totalTrees+1
-                    newTree.IDContext = totalTrees
-                    -- _P("Creating new tree with IDContext: ", newTree.IDContext)
-                    -- _P("Total Trees til now: ", totalTrees)
-                    if tree.Label == "Entity" then
-                        _P("Moving past 'Entity' Check")
-                        local success, iterator = pcall(pairs, content)
-                        if success == true and (type(content) == "table" or type(content) == "userdata") then
-                            _P("SUCCESS")
-                            if success and GetPropertyOrDefault(content, "AppliedMaterials", nil) and content.AppliedMaterials.MaterialInstance and content.AppliedMaterials.MaterialInstance.Name then
-                                _P("Found MaterialInstance")
-                                local materialName = content.AppliedMaterials.MaterialInstance.Name
-                                for materialInstance, bool in pairs(materialInstances) do
-                                    if materialInstance ~= materialName then
-                                        materialInstances[materialName] = true
-                                        _P("-------------------------------------------------------------------------")
-                                        _P("-------------------------------------------------------------------------")
-                                        _P("MATERIALINSTANCES")
-                                        _D(materialInstances)
-                                        populateScribeTree(newTree, content)
-                                    end
-                                end
-                            else
-                                _P("-----------------------------------------------------------------------")
-                                _P("[Entity - ELSE] label is: ", label, " and content is: ", content)
-                                _P("[Entity - ELSE] type of new label is: ", type(label))
-                                _P("[Entity - ELSE] type of new content is: ", type(content))
-                                if label == "Visual" then
-                                    _P("Encountered VisualComponent")
-                                    -- _D(content)
-                                    -- Ext.IO.SaveFile("VisualStackOverflow.json", Ext.DumpExport(content))
-                                end
-                                populateScribeTree(newTree, content)
-                            end
-                        end
-                    else
-                        populateScribeTree(newTree, content)
+                    local status, result = pcall(Ext.Types.Serialize, content)
+                    if not status then
+                        result = DeepCopy(content)
                     end
+                    addTreeOnClick(newTree, result)
+                -- content is non-table
+                else
+                    local newTree = tree:AddTree(tostring(label))
+                addTreeOnClick(newTree, content)
                 end
+            -- empty content -> only put label as tree
             else
-                _P("[2.Else]Label was: ", label)
-                _P("[2.Else]Content was: ", content)
+                _P("label ", label)
+                _D(label)
                 local newTree = tree:AddTree(tostring(label))
-                addTreeOnClick(newTree)
-                totalTrees = totalTrees+1
-                newTree.IDContext = totalTrees
-                -- _P("Creating new tree with IDContext: ", newTree.IDContext)
                 newTree.Bullet = true
-                -- _P("Total Trees til now: ", totalTrees)
             end
         end
+    -- table is not table but bool, string etc -> recursion ends here
     else
-        _P("[1. Not Table or Userdata]Label was: ", tree.Label)
-        _P("[1. Not Table or Userdata]Content was: ", type(currentTable))
         local newTree = tree:AddTree(tostring(currentTable))
-        addTreeOnClick(newTree)
-        totalTrees = totalTrees+1
-        newTree.IDContext = totalTrees
-        -- _P("Creating new tree with IDContext: ", newTree.IDContext)
         newTree.Bullet = true
-        -- _P("Total Trees til now: ", totalTrees)
+    end
+end
+
+
+
+-- TODO - visual  lacks most content. Visual.Visual is missing
+local function populateScribeTreeInitilization(tree, sortedTable)
+
+    -- during the dirst iteration, for sorting, labels are numbers. They can be discarded
+
+    for index, entry in pairs(sortedTable) do 
+
+        label = entry.key
+        content = entry.value
+
+        -- special case for empty table
+        local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
+        if stringify == "{}" or stringify == "[]" then
+            local newTree = tree:AddTree(tostring(label))
+            local child = newTree:AddTree(tostring(stringify))
+            child.Bullet = true
+        -- regular case -> recursion    
+        elseif (type(content) == "table") or (type(content) == "userdata") then
+            local newTree = tree:AddTree(tostring(label))
+            local status, result = pcall(Ext.Types.Serialize, content)
+            if not status then
+                result = DeepCopy(content)
+            end
+            addTreeOnClick(newTree, result)
+        -- content is non-table
+        else
+            local newTree = tree:AddTree(tostring(label))
+            addTreeOnClick(newTree, content)
+        end
     end
 end
 
@@ -474,9 +434,10 @@ local function updateScribeTree(tab)
 end
 
 function InitializeScribeTree(tab)
-    -- _P("Initializing Tab: ", tab)
+    _P("Initializing Tab: ", tab)
     -- _P("initializedBefore = ", initializedBefore)
-    local data = GetAndSaveData(tab)
+    local array,data = GetAndSaveData(tab)
+
     -- local data = GetScribeData(tab)
     if initializedBefore == false then
         local table = GetScribeTable(tab)
@@ -514,9 +475,14 @@ function InitializeScribeTree(tab)
         
         setScribeRootTree(tab, rootTree)
         setScribeDumpText(tab, dumpText)
-        populateScribeTree(rootTree, data)
+
+
+         -- during the first iteration, due to sorting, we want to discard the label
+       
+
+        populateScribeTreeInitilization(rootTree, array)
         -- _D(data)
-        _P("Total trees created: ", totalTrees)
+        --_P("Total trees created: ", totalTrees)
         totalTrees = 1
 
         -- for i=1, #rootTree.Children do

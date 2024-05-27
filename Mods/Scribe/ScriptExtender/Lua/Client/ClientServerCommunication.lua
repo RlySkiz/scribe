@@ -11,7 +11,7 @@
 
 
 local host
-local characterVisual
+--local characterVisual
 
 
 ---------------------------------------------------------------------------
@@ -27,9 +27,9 @@ local function setHost(newHost)
 
 end
 
-function GetCharacterVisual()
-    return characterVisual
-end
+-- function GetCharacterVisual()
+--     return characterVisual
+-- end
 
 
 ---------------------------------------------------------------------------
@@ -63,10 +63,14 @@ Ext.Events.NetMessage:Subscribe(function(e)
     --
     ---------------------------------------------------------------------------
 
-    if (e.Channel == "SendCharacterVisualDump") then
-        local visual = Ext.Json.Parse(e.Payload)
-        characterVisual = visual
-    end
+    -- if (e.Channel == "RequestCharacterVisual") then
+    --     _P("RequestCharacterVisual recieved")
+
+    --     local uuid = Ext.Json.Parse(e.Payload)
+    --     local characterVisual = Ext.Resource.Get(uuid, "Visual")
+    --     Ext.Net.BroadcastMessage("SendCharacterVisual",Ext.Json.Stringify(characterVisual))
+    --     _P("SendCharacterVisual send")
+    -- end
 end)
 
 
