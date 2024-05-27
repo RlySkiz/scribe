@@ -312,7 +312,7 @@ function GetAndSaveData(tab)
         _P("RequestCharacterVisual send")
         -- data = characterVisual
         -- SCRIBE[tab].DATA = DeepCopy(data)
-        break
+        --break
     end
     
     return sortData(data)
@@ -344,6 +344,21 @@ end
 
 
 
+-- TODO - add a nuch more, so we can get the race, the background etc.
+-- if the string is a loca, append the translated loca
+--@param str          string 
+--@return translation string
+local function addLoca(str)
+    _P("adding loca")
+    local translation = str
+    local suffix = Ext.Loca.GetTranslatedString(str)
+    if suffix ~= "" then
+        translation = str .. " - " .. suffix
+    end
+    return translation
+end
+
+
 
 -- TODO - translate locas
 local materialInstances = {}
@@ -355,12 +370,12 @@ populateScribeTree = function(tree, currentTable)
                 -- special case for empty table
                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
                 if stringify == "{}" or stringify == "[]" then
-                    local newTree = tree:AddTree(tostring(label))
+                    local newTree = tree:AddTree(tostring(addLoca(label)))
                     local child = newTree:AddTree(tostring(stringify))
                     child.Bullet = true
                 -- regular case -> recursion    
                 elseif (type(content) == "table") or (type(content) == "userdata") then
-                    local newTree = tree:AddTree(tostring(label))
+                    local newTree = tree:AddTree(tostring(addLoca(label)))
                     local status, result = pcall(Ext.Types.Serialize, content)
                     if not status then
                         result = DeepCopy(content)
@@ -368,20 +383,20 @@ populateScribeTree = function(tree, currentTable)
                     addTreeOnClick(newTree, result)
                 -- content is non-table
                 else
-                    local newTree = tree:AddTree(tostring(label))
+                    local newTree = tree:AddTree(tostring(addLoca(label)))
                 addTreeOnClick(newTree, content)
                 end
             -- empty content -> only put label as tree
             else
                 _P("label ", label)
                 _D(label)
-                local newTree = tree:AddTree(tostring(label))
+                local newTree = tree:AddTree(tostring(addLoca(label)))
                 newTree.Bullet = true
             end
         end
     -- table is not table but bool, string etc -> recursion ends here
     else
-        local newTree = tree:AddTree(tostring(currentTable))
+        local newTree = tree:AddTree(tostring(addLoca(currentTable)))
         newTree.Bullet = true
     end
 end
