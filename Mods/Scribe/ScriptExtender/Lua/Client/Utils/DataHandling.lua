@@ -405,7 +405,12 @@ populateScribeTree = function(tree, currentTable)
         end
     -- table is not table but bool, string etc -> recursion ends here
     else
-        local newTree = tree:AddTree(tostring(addLoca(currentTable)))
+        local newTree
+        if Ext.Types.GetObjectType(currentTable) == "Entity" then
+            newTree = tree:AddTree(tostring(Ext.Entity.HandleToUuid(currentTable)))
+        else
+            newTree = tree:AddTree(tostring(addLoca(currentTable)))
+        end
         newTree.Bullet = true
     end
 end
