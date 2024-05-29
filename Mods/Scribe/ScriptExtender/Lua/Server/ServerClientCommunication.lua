@@ -5,6 +5,8 @@
 -----------------------------------------------------------------------------------------------
 
 
+-- TODO - try sending over via DumpExport if Stringify doesn't work 
+
 
 Ext.Events.NetMessage:Subscribe(function(e) 
 
@@ -15,6 +17,10 @@ Ext.Events.NetMessage:Subscribe(function(e)
     --
     ---------------------------------------------------------------------------
 
+
+    -- TODO: Get both Server and Client Entity and smush them together -> different information in both  
+
+
     -- if (e.Channel == "RequestCharacterVisual") then
     --     local uuid = e.Payload
     --     local dump = Ext.Entity.Get(uuid).ServerCharacter.Template.CharacterVisualResourceID
@@ -24,15 +30,13 @@ Ext.Events.NetMessage:Subscribe(function(e)
 
 
     --_D(Ext.Entity.Get("bd3c7bc6-5169-3451-5210-9ec9a9cf53b1").ServerCharacter.Template.CharacterVisualResourceID)
--- "d67bd924-3c1f-c33a-5298-feca5bbdc284"
+    -- "d67bd924-3c1f-c33a-5298-feca5bbdc284"
     if (e.Channel == "RequestCharacterVisualResourceID") then
-        -- _P("RequestCharacterVisualResourceID recieved")
 
         local uuid = Ext.Json.Parse(e.Payload)
         local characterVisualResourceID = Ext.Entity.Get(uuid).ServerCharacter.Template.CharacterVisualResourceID
         -- local characterVisual = Ext.Resource.Get(characterVisualID, "CharacterVisual")
         Ext.Net.BroadcastMessage("SendCharacterVisualResourceID",Ext.Json.Stringify(characterVisualResourceID))
-       -- _P("SendCharacterVisual send")
     end
 
     ---------------------------------------------------------------------------
@@ -40,7 +44,6 @@ Ext.Events.NetMessage:Subscribe(function(e)
     --                                Send Entity Data
     --
     ---------------------------------------------------------------------------
-
 
       if (e.Channel == "RequestEntityData") then
         -- _P("Received RequestEntityData")

@@ -1,3 +1,7 @@
+-- Not loaded
+-- TODO - remove IDContext and bullet
+
+
 Node = {}
 Node.__index = Node
 

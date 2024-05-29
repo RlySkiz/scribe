@@ -12,18 +12,17 @@
 
 -- Options for stringifying
 STRINGIFY_OPTIONS = {
-                    StringifyInternalTypes = true,
-                    IterateUserdata = true,
-                    AvoidRecursion = true
-                    }
+    StringifyInternalTypes = true,
+    IterateUserdata = true,
+    AvoidRecursion = true
+    }
 
-
-   
 
 --------------------------------------------------------------------------------------------
 --                                     Variables
 --------------------------------------------------------------------------------------------
 
+-- TODO - this doesn't belong here -> move to a mouseover related class
 local savedMouseover
 
 
@@ -33,88 +32,39 @@ local savedMouseover
 
 -----------------------------------------------------------------
 
--- local function setSavedMouseover(mouseover)
---     savedMouseover = mouseover
--- end
 
-
-
+-- TODO - this doesn't belong here -> move to a mouseover related class
 -- returns object under the mouse
 --@return mouseover userdata - userdata of object under the mouse          
 function GetMouseover()
     local mouseover = Ext.UI.GetPickingHelper(1)
     if mouseover ~= nil then
-        -- setSavedMouseover(mouseover)
+    -- setSavedMouseover(mouseover)
         return mouseover
     else
-        _P("[ClientUtils.lua] - GetMouseover - No mouseover!")
+        _P("[Utils.lua] - GetMouseover - No mouseover!")
     end 
 end
 
 
-
-
+-- TODO - this doesn't belong here -> move to a mouseover related class
 function GetSavedMouseover()
-    return savedMouseover
+return savedMouseover
 end
 
 
 -- returns entity uuid from userdata
 --@param mouseover userdata 
+--@return uuid     string
 function getUUIDFromUserdata(mouseover)
     local entity = mouseover.Inner.Inner[1].GameObject
     if entity ~= nil then
         return Ext.Entity.HandleToUuid(entity)
     else
-        _P("[ClientUtils.lua] - getUUIDFromUserdata(mouseover) - Not an entity!")
+        _P("[Utils.lua] - getUUIDFromUserdata(mouseover) - Not an entity!")
     end
 end
 
-
-
--- -- will break when IMGUI window is changed
--- --@return mouseOverRoot tree
--- function GetMouseoverRootTree()
---     local mouseoverTree = Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell.Tree
---     _P(mouseoverTree)
---     return mouseoverTree
--- end
-
--- -- will break when IMGUI window is changed
--- --@return entityRoot tree
--- function GetEntityRootTree()
---     local entityTree = Tabbar.Children[2].Children[6].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell.Tree
---     return entityTree
--- end
-
--- -- will break when IMGUI window is changed
--- --@return visualRoot tree
--- function GetVisualRootTree()
---     local visualTree = Tabbar.Children[3].Children[1].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell.Tree
---     return visualTree
--- end
-
--- -- will break when IMGUI window is changed
--- --@return mouseOverRoot tree
--- function GetMouseoverRootCell()
---     local mouseoverCell = Tabbar.Children[1].Children[5].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell
---     _P(mouseoverCell)
---     return mouseoverCell
--- end
-
--- -- will break when IMGUI window is changed
--- --@return entityRoot tree
--- function GetEntityRootCell()
---     local entityCell = Tabbar.Children[2].Children[6].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell
---     return entityCell
--- end
-
--- -- will break when IMGUI window is changed
--- --@return visualRoot tree
--- function GetVisualRootCell()
---     local visualCell = Tabbar.Children[3].Children[1].Children[1].Children[1] -- Tabbar.TabItem.Table.Row.Cell
---     return visualCell
--- end
 
 
 --------------------------------------------------------------------------------------------
@@ -141,7 +91,7 @@ end
 -- @return int           -       size of the table
 function TableSize(table)
     local count = 0
-    for _ in pairs(table) do
+        for _ in pairs(table) do
         count = count + 1
     end
     return count
@@ -152,37 +102,46 @@ end
 --@param    orig table - orignial table
 --@return   copy table - copied table
 function DeepCopy(orig)
-    local copy = {}
+local copy = {}
 
     success, iterator = pcall(pairs, orig)
     if success == true and (type(orig) == "table" or type(orig) == "userdata") then
 
         for label, content in pairs(orig) do
 
-            if content then
-                 copy[DeepCopy(tostring(label))] = DeepCopy(content)
-            else
-                copy[DeepCopy(label)] = "nil"
-            end
+        if content then
+            copy[DeepCopy(tostring(label))] = DeepCopy(content)
+        else
+            copy[DeepCopy(label)] = "nil"
+        end
 
-        end
-        if copy and (not #copy == 0) then
-            setmetatable(copy, DeepCopy(getmetatable(orig)))
-        end
+    end
+
+    if copy and (not #copy == 0) then
+        setmetatable(copy, DeepCopy(getmetatable(orig)))
+    end
+
     else
         copy = orig
     end
-    return copy
+        return copy
 end
 
 
 
 -- string.find but not case sensitive
 --@param str1 string       - string 1 to compare
---@param str2 string  - string 2 to compare
+--@param str2 string       - string 2 to compare
 function CaseInsensitiveSearch(str1, str2)
     str1 = string.lower(str1)
     str2 = string.lower(str2)
     local result = string.find(str1, str2, 1, true)
     return result ~= nil
+end
+
+
+
+-- TODO: concatenate function (copy from DOLL)
+function Concat(tab1, tab2)
+
 end

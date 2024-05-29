@@ -6,13 +6,14 @@
 --
 ---------------------------------------------------------------------------------------
 
+-- TODO - move to Scribe.lua
+--- satan comment ---
+-- W = Ext.IMGUI.NewWindow("Scribe")
+-- Tabbar = W:AddTabBar("")
 
-W = Ext.IMGUI.NewWindow("Scribe")
-Tabbar = W:AddTabBar("")
+--- satan comment --- MouseoverTab = Tabbar:AddTabItem("Mouseover")
 
-MouseoverTab = Tabbar:AddTabItem("Mouseover")
-
-MouseoverTab:AddText("Num_2 = mouseover/entity file dump | Num_3 = test stuff")
+--- satan comment --- MouseoverTab:AddText("Num_2 = mouseover/entity file dump | Num_3 = test stuff")
 -- MouseoverSearchInput = MouseoverTab:AddInputText("")
 -- MouseoverSearchInput.AutoSelectAll = true
 -- MouseoverSearchInput.Text = "Test"
@@ -20,10 +21,10 @@ MouseoverTab:AddText("Num_2 = mouseover/entity file dump | Num_3 = test stuff")
 -- MouseoverSearchButton = MouseoverTab:AddButton("Search")
 -- MouseoverSearchButton.SameLine = true
 
-MouseoverTab:AddSeparator()
+--- satan comment --- MouseoverTab:AddSeparator()
 
-MouseoverTable = MouseoverTab:AddTable("",2)
-MouseoverTable.ScrollY = true
+--- satan comment --- MouseoverTable = MouseoverTab:AddTable("",2)
+--- satan comment --- MouseoverTable.ScrollY = true
 -- MouseoverTableRow = MouseoverTable:AddRow("")
 
     -- Create CCInfoTable about having to enter CharacterCreation/Mirror to load Vanilla Icons

@@ -1,2 +1,2 @@
-Ext.Require("Server/Utils.lua")
+Ext.Require("Shared/Utils.lua")
 Ext.Require("Server/ServerClientCommunication.lua")

@@ -7,7 +7,7 @@
 ---------------------------------------------------------------------------------------
 
 
-EntityTab = Tabbar:AddTabItem("Entity")
+--- satan comment --- EntityTab = Tabbar:AddTabItem("Entity")
 
 
 -- EntityTab:AddText("Name: ")
@@ -22,17 +22,17 @@ EntityTab = Tabbar:AddTabItem("Entity")
 -- EntityBodyType = EntityTab:AddText("")
 -- EntityBodyType.SameLine = true
 
-EntityTab:AddText("Entity UUID: ")
-EntityUUID = EntityTab:AddText("")
-EntityUUID.SameLine = true
+--- satan comment --- EntityTab:AddText("Entity UUID: ")
+--- satan comment --- EntityUUID = EntityTab:AddText("")
+--- satan comment --- EntityUUID.SameLine = true
 
 -- EntityTab:AddText("Dump")
 -- dumpEntity = EntityTab:AddText("")
 
-EntityTab:AddSeparator()
+--- satan comment --- EntityTab:AddSeparator()
 
-EntityTable = EntityTab:AddTable("",2)
-EntityTable.ScrollY = true
+--- satan comment --- EntityTable = EntityTab:AddTable("",2)
+--- satan comment --- EntityTable.ScrollY = true
 -- EntityTableRow = EntityTable:AddRow("")
 -- entityDumpTree = EntityTableRow:AddCell():AddTree("Entity")
 

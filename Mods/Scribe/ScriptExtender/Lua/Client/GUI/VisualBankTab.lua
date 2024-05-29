@@ -7,13 +7,15 @@
 ---------------------------------------------------------------------------------------
 
 
-VisualBankTab = Tabbar:AddTabItem("VisualBank")
+--- satan comment ---
 
-VisualBankTab:AddText("VisualBank UUID: ")
-VisualBankUUID = VisualBankTab:AddText("")
-VisualBankUUID.SameLine = true
+-- VisualBankTab = Tabbar:AddTabItem("VisualBank")
 
-VisualBankTab:AddSeparator()
+-- VisualBankTab:AddText("VisualBank UUID: ")
+-- VisualBankUUID = VisualBankTab:AddText("")
+-- VisualBankUUID.SameLine = true
 
-VisualBankTable = VisualBankTab:AddTable("",2)
-VisualBankTable.ScrollY = true
+-- VisualBankTab:AddSeparator()
+
+-- VisualBankTable = VisualBankTab:AddTable("",2)
+-- VisualBankTable.ScrollY = true

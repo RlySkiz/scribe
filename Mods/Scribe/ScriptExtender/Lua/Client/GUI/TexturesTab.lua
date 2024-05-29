@@ -6,13 +6,15 @@
 --
 ---------------------------------------------------------------------------------------
 
-TexturesTab = Tabbar:AddTabItem("Textures")
+--- satan comment ---
 
-TexturesTab:AddText("Texture UUID: ")
-TextureUUID = TexturesTab:AddText("")
-TextureUUID.SameLine = true
+-- TexturesTab = Tabbar:AddTabItem("Textures")
 
-TexturesTab:AddSeparator()
+-- TexturesTab:AddText("Texture UUID: ")
+-- TextureUUID = TexturesTab:AddText("")
+-- TextureUUID.SameLine = true
 
-TexturesTable = TexturesTab:AddTable("",2)
-TexturesTable.ScrollY = true
+-- TexturesTab:AddSeparator()
+
+-- TexturesTable = TexturesTab:AddTable("",2)
+-- TexturesTable.ScrollY = true

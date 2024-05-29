@@ -7,7 +7,7 @@
 ---------------------------------------------------------------------------------------
 
 
-
+-- TODO - way too large
 
 --------------------------------------------------------------------------------------------
 --                                      VARIABLES
@@ -32,6 +32,7 @@
 -- local doOnce = 0 
 
 
+-- TODO - TABLE can be yeeted
 -- Combined map for linking both DATA and IMGUI tables to SlotName
 -- Access this like so:
 -- helmetDATA = VISUALDATA_TABLE["Helmet"].DATA
@@ -44,6 +45,7 @@ local SCRIBE = {
     ["Materials"] = { DATA = {}, TABLE = MaterialsTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
     ["Textures"] = { DATA = {}, TABLE = TexturesTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
 }
+
 
 ---------------------------------------------------------------------------------------------------
 --                                           Getters
@@ -114,6 +116,8 @@ function GetScribeData(tab)
     end
 end
 
+
+-- TODO - yeet
 -- Returns the TABLE table based on slot name
 -- @param slot string - allowed string (see SCRIBE keys)
 -- @return imguiTable table or nil if slot does not exist
@@ -325,6 +329,7 @@ function SaveData(tab)
     if tab == "Mouseover"  then
         data = GetMouseover()
         SCRIBE[tab].DATA = DeepCopy(data)
+        
     elseif tab == "Entity" then
         data = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())):GetAllComponents()
         SCRIBE[tab].DATA = data
@@ -453,6 +458,7 @@ populateScribeTreeInitilization = function(tree, sortedTable)
                 -- special case for empty table
                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
                 -- TODO: some nodes have a [] but that contains more data -> send into recursion
+                -- maybe check the object type  to determine
                 if stringify == "{}" or stringify == "[]" then
                     local newTree = tree:AddTree(tostring(addLoca(label)))
                     local child = newTree:AddTree(tostring(stringify))
@@ -495,7 +501,8 @@ end
 
 local initializedBefore = false
 local function updateScribeTree(tab)
-    local table = GetScribeTable(tab)
+    --- satancomment -- local table = GetScribeTable(tab)
+    local table = Tab:getTable(tab)
     for i=1, #table.Children do
         table.Children[i]:Destroy()
     end
@@ -525,7 +532,12 @@ function InitializeScribeTree(tab)
     -- local data = GetScribeData(tab)
     -- _P("InitializedBefore? ", initializedBefore)
     if initializedBefore == false then
-        local table = GetScribeTable(tab)
+        -- _P("Not initialized before ", tab)
+        --_D(SCRIBE[tab].DATA) -- exist here
+        --local table = GetScribeTable(tab) -- seizes to exist here
+        local table = Tab:getTable(tab)
+        --_D(table)
+        
         
         -- _P("[DataHandling.lua] - populateScribeTree() - data Dump:") -- DEBUG
         -- _D(data)

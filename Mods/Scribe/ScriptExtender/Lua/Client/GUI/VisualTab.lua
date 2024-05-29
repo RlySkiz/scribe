@@ -5,14 +5,15 @@
 --
 --
 ---------------------------------------------------------------------------------------
+--- satan comment ---
 
-VisualTab = Tabbar:AddTabItem("Visual")
+-- VisualTab = Tabbar:AddTabItem("Visual")
 
-VisualTab:AddText("Visual UUID: ")
-VisualUUID = VisualTab:AddText("")
-VisualUUID.SameLine = true
+-- VisualTab:AddText("Visual UUID: ")
+-- VisualUUID = VisualTab:AddText("")
+-- VisualUUID.SameLine = true
 
-VisualTab:AddSeparator()
+-- VisualTab:AddSeparator()
 
-VisualTable = VisualTab:AddTable("",2)
-VisualTable.ScrollY = true
+-- VisualTable = VisualTab:AddTable("",2)
+-- VisualTable.ScrollY = true

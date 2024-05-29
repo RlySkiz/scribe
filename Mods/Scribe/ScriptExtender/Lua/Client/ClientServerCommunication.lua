@@ -10,6 +10,12 @@
 ---------------------------------------------------------------------------
 
 
+    -- TODO: Call InitializeScribeTree here after the corresponding information has been received to make sure the
+    -- initilization only starts after receiving data
+
+
+
+    -- TODO - this doesn't belong here I think
 local host
 --local characterVisual
 

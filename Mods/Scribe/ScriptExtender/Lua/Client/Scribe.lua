@@ -9,6 +9,27 @@
 
 -- local mouseoverRoot = (Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]) -- MouseoverTab.MouseoverTable.MouseoverTableRow.Cell.TreeRoot
 
+
+
+---------------------------------------------------------------------------------------------------
+--                                       Initilization
+-------------------------------------------------------------------------------------------------
+
+
+local tabsLabel = {"Mouseover", "Entity", "Visual", "VisualBank", "Materials", "Textures"} 
+
+
+W = Ext.IMGUI.NewWindow("Scribe")
+Tabbar = W:AddTabBar("")
+
+for _,label in ipairs(tabsLabel) do
+    -- TODO - this is alphabetical, we don't want that
+    _P("Tab ", label)
+    Tab:initializeTab(label, Tabbar)
+end
+
+
+
 ---------------------------------------------------------------------------------------------------
 --                                       Listeners
 -------------------------------------------------------------------------------------------------
@@ -26,6 +47,8 @@ Ext.Events.KeyInput:Subscribe(function (e)
         -- Displays Dump in IMGUI windows
         if e.Key == "NUM_3" then
             -- GetAndSaveData("Mouseover")
+
+            -- TODO - instead of initializing send over a message to server 
             InitializeScribeTree("Mouseover")
             InitializeScribeTree("Entity")
             InitializeScribeTree("Visual")
