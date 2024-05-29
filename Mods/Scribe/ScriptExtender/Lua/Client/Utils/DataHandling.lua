@@ -263,17 +263,30 @@ end
 -- end
 
 local function sortData(data)
-    local array = {}
 
-    for key, value in pairs(data)do
-      table.insert(array, {key = key, value = value})
+    if type(data) == "table" or type(data) == "userdata" then
+        local array = {}
+
+        for key, value in pairs(data)do
+        table.insert(array, {key = key, value = value})
+        end
+
+        table.sort(array, function(a, b)
+            -- Convert keys to numbers for comparison
+            local keyA, keyB = tonumber(a.key), tonumber(b.key)
+            -- If conversion is successful, compare numerically
+            if keyA and keyB then
+                return keyA < keyB
+            else
+                -- If conversion fails, compare as strings
+                return a.key < b.key
+            end
+        end)
+
+        return array, data
+    else
+        return data, data
     end
-
-    table.sort(array, function(a, b)
-        return a.key < b.key
-      end)
-
-    return array, data
 end
 
 
@@ -333,6 +346,7 @@ end
 
 
 -- declared beforehand since they reference each other
+local populateScribeTreeInitilization
 local populateScribeTree
 local addTreeOnClick
 
@@ -346,7 +360,10 @@ addTreeOnClick = function(tree, currentTable)
         -- Only do the Onclick function once
         if not treeClicked[tree] then
             treeClicked[tree] = true
-            populateScribeTree(tree,currentTable)
+
+            local sortedData = sortData(currentTable)
+            populateScribeTreeInitilization(tree, sortedData)
+            --populateScribeTree(tree,currentTable)
         end
     end
 end
@@ -369,15 +386,73 @@ end
                 
 
 -- TODO - translate locas
-local materialInstances = {}
-populateScribeTree = function(tree, currentTable)    
-    local success, iterator = pcall(pairs, currentTable)
-    if success == true and (type(currentTable) == "table" or type(currentTable) == "userdata") then
-        for label,content in pairs(currentTable) do
+-- local materialInstances = {}
+-- populateScribeTree = function(tree, currentTable)    
+--     local success, iterator = pcall(pairs, currentTable)
+--     if success == true and (type(currentTable) == "table" or type(currentTable) == "userdata") then
+--         for label,content in pairs(currentTable) do
+--             if content then
+--                 -- special case for empty table
+--                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
+--                 -- TOD: some nodes have a [] but that contains more data -> send into recursion
+--                 if stringify == "{}" or stringify == "[]" then
+--                     local newTree = tree:AddTree(tostring(addLoca(label)))
+--                     local child = newTree:AddTree(tostring(stringify))
+--                     child.Bullet = true
+--                 -- regular case -> recursion    
+--                 elseif (type(content) == "table") or (type(content) == "userdata") then
+--                     local newTree = tree:AddTree(tostring(addLoca(label)))
+--                     local status, result = pcall(Ext.Types.Serialize, content)
+--                     if not status then
+--                         result = DeepCopy(content)
+--                     end
+--                     addTreeOnClick(newTree, result)
+--                 -- content is non-table
+--                 else
+--                     local newTree = tree:AddTree(tostring(addLoca(label)))
+--                     addTreeOnClick(newTree, content)
+--                 end
+--             -- empty content -> only put label as tree
+--             else
+--                 _P("label ", label)
+--                 _D(label)
+--                 local newTree = tree:AddTree(tostring(addLoca(label)))
+--                 newTree.Bullet = true
+--             end
+--         end
+--     -- table is not table but bool, string etc -> recursion ends here
+--     else
+--         local newTree
+--         if Ext.Types.GetObjectType(currentTable) == "Entity" then
+--             newTree = tree:AddTree(tostring(Ext.Entity.HandleToUuid(currentTable)))
+--         else
+--             newTree = tree:AddTree(tostring(addLoca(currentTable)))
+--         end
+--         newTree.Bullet = true
+--     end
+-- end
+
+
+
+-- TODO - visual  lacks most content. Visual.Visual is missing
+populateScribeTreeInitilization = function(tree, sortedTable)
+
+    -- during the first iteration, for sorting, labels are numbers. They can be discarded
+
+
+    local success, iterator = pcall(pairs, sortedTable)
+    if success == true and (type(sortedTable) == "table" or type(sortedTable) == "userdata") then
+
+        for index, entry in pairs(sortedTable) do 
+
+            local label = entry.key
+            local content = entry.value
+
             if content then
+
                 -- special case for empty table
                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
-                -- TOD: some nodes have a [] but that contains more data -> send into recursion
+                -- TODO: some nodes have a [] but that contains more data -> send into recursion
                 if stringify == "{}" or stringify == "[]" then
                     local newTree = tree:AddTree(tostring(addLoca(label)))
                     local child = newTree:AddTree(tostring(stringify))
@@ -393,59 +468,28 @@ populateScribeTree = function(tree, currentTable)
                 -- content is non-table
                 else
                     local newTree = tree:AddTree(tostring(addLoca(label)))
-                addTreeOnClick(newTree, content)
+                    addTreeOnClick(newTree, content)
                 end
-            -- empty content -> only put label as tree
+
             else
                 _P("label ", label)
                 _D(label)
                 local newTree = tree:AddTree(tostring(addLoca(label)))
                 newTree.Bullet = true
+
             end
         end
-    -- table is not table but bool, string etc -> recursion ends here
+
     else
+
         local newTree
-        if Ext.Types.GetObjectType(currentTable) == "Entity" then
-            newTree = tree:AddTree(tostring(Ext.Entity.HandleToUuid(currentTable)))
+        if Ext.Types.GetObjectType(sortedTable) == "Entity" then
+            newTree = tree:AddTree(tostring(Ext.Entity.HandleToUuid(sortedTable)))
         else
-            newTree = tree:AddTree(tostring(addLoca(currentTable)))
+            newTree = tree:AddTree(tostring(addLoca(sortedTable)))
         end
         newTree.Bullet = true
-    end
-end
 
-
-
--- TODO - visual  lacks most content. Visual.Visual is missing
-local function populateScribeTreeInitilization(tree, sortedTable)
-
-    -- during the dirst iteration, for sorting, labels are numbers. They can be discarded
-
-    for index, entry in pairs(sortedTable) do 
-
-        local label = entry.key
-        local content = entry.value
-
-        -- special case for empty table
-        local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
-        if stringify == "{}" or stringify == "[]" then
-            local newTree = tree:AddTree(tostring(label))
-            local child = newTree:AddTree(tostring(stringify))
-            child.Bullet = true
-        -- regular case -> recursion    
-        elseif (type(content) == "table") or (type(content) == "userdata") then
-            local newTree = tree:AddTree(tostring(label))
-            local status, result = pcall(Ext.Types.Serialize, content)
-            if not status then
-                result = DeepCopy(content)
-            end
-            addTreeOnClick(newTree, result)
-        -- content is non-table
-        else
-            local newTree = tree:AddTree(tostring(label))
-            addTreeOnClick(newTree, content)
-        end
     end
 end
 
