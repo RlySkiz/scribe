@@ -7,26 +7,28 @@
 ---------------------------------------------------------------------------------------
 
 
--- local mouseoverRoot = (Tabbar.Children[1].Children[5].Children[1].Children[1].Children[1]) -- MouseoverTab.MouseoverTable.MouseoverTableRow.Cell.TreeRoot
-
-
-
 ---------------------------------------------------------------------------------------------------
---                                       Initilization
--------------------------------------------------------------------------------------------------
+--                             Initilization  of  GUI
+---------------------------------------------------------------------------------------------------
 
 
-local tabsLabel = {"Mouseover", "Entity", "Visual", "VisualBank", "Materials", "Textures"} 
+local tabsLabel = {}
+
+table.insert(tabsLabel, "Mouseover")
+table.insert(tabsLabel, "Entity")
+table.insert(tabsLabel, "Visual")
+table.insert(tabsLabel, "VisualBank")
+--table.insert(tabsLabel, "Materials")
+--table.insert(tabsLabel, "Textures")
 
 
 W = Ext.IMGUI.NewWindow("Scribe")
 Tabbar = W:AddTabBar("")
 
 for _,label in ipairs(tabsLabel) do
-    -- TODO - this is alphabetical, we don't want that
-    _P("Tab ", label)
     Tab:initializeTab(label, Tabbar)
 end
+
 
 
 
@@ -48,10 +50,11 @@ Ext.Events.KeyInput:Subscribe(function (e)
         if e.Key == "NUM_3" then
             -- GetAndSaveData("Mouseover")
 
-            -- TODO - instead of initializing send over a message to server 
             InitializeScribeTree("Mouseover")
+            -- TODO - instead of initializing send over a message to server 
             InitializeScribeTree("Entity")
-            InitializeScribeTree("Visual")
+            InitializeScribeTree("Visual") -- no need to send additional message as this is on the entity
+             -- TODO - instead of initializing send over a message to server
             SaveData("VisualBank")
             -- InitializeScribeTree("VisualBank")
             -- InitializeScribeTree("Materials")
@@ -60,3 +63,8 @@ Ext.Events.KeyInput:Subscribe(function (e)
     end
 end)
 
+-- Mouseover has to be populated from client
+-- Entity we need additional ServerEntity information so we need to request dump from server
+-- Visual is Entity.Visual.Visual
+-- VisualBank can be populated from client but needs something from the ServerEntity dump, namely .ServerCharacter.Template.CharacterVisualResourceID
+-- ;then generate dump via Ext.Resource.Get(uuid, "CharacterVisual")

@@ -13,16 +13,8 @@ Ext.Require("Client/ClientServerCommunication.lua")
 
 
 -- GUI - scripts that directly deal with IMGUI
-
-
---- satan comment -- Ext.Require("Client/GUI/MouseoverTab.lua")
---- satan comment --Ext.Require("Client/GUI/EntityTab.lua")
---- satan comment --Ext.Require("Client/GUI/VisualTab.lua")
---- satan comment --Ext.Require("Client/GUI/VisualBankTab.lua")
--- Ext.Require("Client/GUI/MaterialsTab.lua")
--- Ext.Require("Client/GUI/TexturesTab.lua")
-
 Ext.Require("Client/GUI/Tab.lua")
+Ext.Require("Client/GUI/Search.lua")
 
 
 

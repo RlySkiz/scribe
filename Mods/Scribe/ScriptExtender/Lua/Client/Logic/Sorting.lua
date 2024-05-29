@@ -31,10 +31,13 @@ end
 --@param tableToFilter table       - the original table
 --@return table                    - returns a new table containing only the elements that include the search term
 function Sorting:filter(searchTerm, tableToFilter)
+
     local foundInKey = false
     local filteredTable = {}
 
-    if type(tableToFilter) == "table" then
+
+    local success, iterator = pcall(pairs, tableToFilter)
+    if success == true and (type(tableToFilter) == "table" or type(tableToFilter) == "userdata") then
         for key, value in pairs(tableToFilter) do
             local foundInKey = false
 
@@ -68,5 +71,6 @@ function Sorting:filter(searchTerm, tableToFilter)
         end
     end
 
+    _D("sorted table " , #sortedTable )
     return filteredTable
 end

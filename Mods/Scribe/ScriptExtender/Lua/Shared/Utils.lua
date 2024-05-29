@@ -145,3 +145,34 @@ end
 function Concat(tab1, tab2)
 
 end
+
+
+
+
+-- sorts a key, value pair table
+function SortData(data)
+
+    if type(data) == "table" or type(data) == "userdata" then
+        local array = {}
+
+        for key, value in pairs(data)do
+        table.insert(array, {key = key, value = value})
+        end
+
+        table.sort(array, function(a, b)
+            -- Convert keys to numbers for comparison
+            local keyA, keyB = tonumber(a.key), tonumber(b.key)
+            -- If conversion is successful, compare numerically
+            if keyA and keyB then
+                return keyA < keyB
+            else
+                -- If conversion fails, compare as strings
+                return a.key < b.key
+            end
+        end)
+
+        return array, data
+    else
+        return data, data
+    end
+end

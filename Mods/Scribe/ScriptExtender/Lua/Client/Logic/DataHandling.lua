@@ -14,36 +14,17 @@
 ---------------------------------------------------------------------------------------------
 
 
-
--- -- copied tables 
--- -- key : label name
--- -- value: table
--- local copiedTables = {}
-
--- local savedNodes = {}
-
-
--- local initRootRow
--- local initRootCell
--- local initRootTree
--- local savedEntity
-
--- -- A "Do Once" for InitializeTree
--- local doOnce = 0 
-
-
--- TODO - TABLE can be yeeted
 -- Combined map for linking both DATA and IMGUI tables to SlotName
 -- Access this like so:
 -- helmetDATA = VISUALDATA_TABLE["Helmet"].DATA
 -- helmetTable = VISUALDATA_TABLE["Helmet"].IMGUI   -- these have been set in DATA_Window
-local SCRIBE = {
-    ["Mouseover"] = { DATA = {}, TABLE = MouseoverTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    ["Entity"] = { DATA = {}, TABLE = EntityTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    ["Visual"] = { DATA = {}, TABLE = VisualTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    ["VisualBank"] = { DATA = {}, TABLE = VisualBankTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    ["Materials"] = { DATA = {}, TABLE = MaterialsTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
-    ["Textures"] = { DATA = {}, TABLE = TexturesTable, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+local scribeMap = {
+    ["Mouseover"] = { DATA = {}, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    ["Entity"] = { DATA = {}, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    ["Visual"] = { DATA = {}, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    ["VisualBank"] = { DATA = {}, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    ["Materials"] = { DATA = {}, ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
+    ["Textures"] = { DATA = {},  ROOTTREE = {}, SERIALIZEDTREE = {}, DUMPTEXT = {}},
 }
 
 
@@ -51,63 +32,16 @@ local SCRIBE = {
 --                                           Getters
 -------------------------------------------------------------------------------------------------
 
--- -- get the Initialized Root Row
--- --@return initRootRow userdata
--- function ReturnInitRootRow()
---     return initRootRow
--- end
 
--- -- get the Initialized Root Cell
--- --@return initRootCell userdata
--- function ReturnInitRootCell()
---     return initRootCell
--- end
-
--- -- get the Initialized Root Tree
--- --@return initRootTree userdata
--- function ReturnInitRootTree()
---     return initRootTree
--- end
-
--- -- get the saved entity
--- --@return sacedEntity string - uuid of the entity
--- local function getSavedEntity()
---     return savedEntity
--- end
-
-
--- -- retrieves the copied table
--- --@param label string - label of tabel that should be returned
--- --@param dump table   - values
--- function GetCopiedTable(label)
---     -- Entity dumps are too large, so they have to be retrieved from new everytime
---     if label == "Entity" then
---         local dump = Ext.Entity.Get(getSavedEntity()):GetAllComponents()
---         return dump
---     else
---         for key, value in pairs(copiedTables) do
---             if key == label then
---                 return value
---             end
---         end
---     end
---     print("[Datahandling.lua] Error: table doesn't exist")
---     return nil    
--- end
-
--- function GetSavedNodes()
---     return savedNodes
--- end
-
-function GetSCRIBE()
-    return SCRIBE
+function GetScribeMap()
+    return scribeMap
 end
 
 -- Returns the DATA table based on slot name
--- @param slot string - allowed string (see SCRIBE keys)
+-- @param slot string - allowed string (see scribeMap keys)
 -- @return dataTable table or nil if slot does not exist
 function GetScribeData(tab)
-    local entry = SCRIBE[tab]
+    local entry = scribeMap[tab]
     if entry then
         return entry.DATA
     else
@@ -117,25 +51,12 @@ function GetScribeData(tab)
 end
 
 
--- TODO - yeet
--- Returns the TABLE table based on slot name
--- @param slot string - allowed string (see SCRIBE keys)
--- @return imguiTable table or nil if slot does not exist
-function GetScribeTable(tab)
-    local entry = SCRIBE[tab]
-    if entry then
-        return entry.TABLE
-    else
-        _P("[DataHandling.lua] - Error - GetScribeTable() - ", tab, " is not a valid Tab")
-        return nil
-    end
-end
 
 -- Returns the TABLE table based on slot name
--- @param slot string - allowed string (see SCRIBE keys)
+-- @param slot string - allowed string (see scribeMap keys)
 -- @return imguiTable table or nil if slot does not exist
 function GetScribeRootTree(tab)
-    local entry = SCRIBE[tab]
+    local entry = scribeMap[tab]
     if entry then
         return entry.ROOTTREE
     else
@@ -144,11 +65,12 @@ function GetScribeRootTree(tab)
     end
 end
 
+-- TODO - do we overwrite this? I need access to the original data for searching
 -- Returns the TABLE table based on slot name
--- @param slot string - allowed string (see SCRIBE keys)
+-- @param slot string - allowed string (see scribeMap keys)
 -- @return imguiTable table or nil if slot does not exist
 function GetScribeDumpText(tab)
-    local entry = SCRIBE[tab]
+    local entry = scribeMap[tab]
     if entry then
         return entry.DUMPTEXT
     else
@@ -158,7 +80,7 @@ function GetScribeDumpText(tab)
 end
 
 function GetScribeSerializedTree(tab)
-    local entry = SCRIBE[tab]
+    local entry = scribeMap[tab]
     if entry then
         return entry.SERIALIZEDTREE
     else
@@ -171,18 +93,18 @@ end
 -- @param payload table - table containing slot and data 
 local function setScribeData(payload)
     _P("[DataHandling.lua] - setScribeData() - Populating table for Tab ", payload.tab)
-    SCRIBE[payload.tab].DATA = payload.data
+    scribeMap[payload.tab].DATA = payload.data
 
     -- _P("[DataHandling.lua] - setDATATable() - DUMP:")
-    -- _D(SCRIBE[payload.slot].DATA)
+    -- _D(scribeMap[payload.slot].DATA)
 end
 
 local function setScribeRootTree(tab, rootTree)
-    SCRIBE[tab].ROOTTREE = rootTree
+    scribeMap[tab].ROOTTREE = rootTree
 end
 
 local function setScribeDumpText(tab, dumpText)
-    SCRIBE[tab].DUMPTEXT = dumpText
+    scribeMap[tab].DUMPTEXT = dumpText
 end
 
 local function setScribeSerializedTree(tab, rootTree)
@@ -190,120 +112,26 @@ local function setScribeSerializedTree(tab, rootTree)
 end
 
 
--- local function setTreeChildren(tree)
---     _P("[DataHandling.lua] - setSCRIBETREECHILDREN() - Populating table for tree ", tree.Label)
---     SCRIBE[tab].CHILDREN = tree.Children
--- end
 
 ---------------------------------------------------------------------------------------------------
 --                                       Setters
 -------------------------------------------------------------------------------------------------
-
--- set the Initialized Root Row
---@param row userdata
--- local function setInitRootRow(row)
---     initRootRow = row
--- end
-
--- -- set the Initialized Root Cell
--- --@param cell userdata
--- local function setInitRootCell(cell)
---     initRootCell = cell
--- end
-
--- -- set the Initialized Root Tree
--- --@param tree userdata
--- local function setInitRootTree(tree)
---     initRootTree = tree
--- end
-
--- -- set the entity
--- --@param entityUUID string
--- local savedEntity
--- local function setSavedEntity(entityUUID)
---     savedEntity = entityUUID
--- end
-
--- -- sets the copied table (deep copy necessary because of lifetime)
--- --@param label string - label of table that should be saved
--- --@param dump table   - values
--- local function setCopiedTable(label,dump)
---     copiedTables[label] = dump
--- end
 
 
 ---------------------------------------------------------------------------------------------------
 --                                      Helper Methods
 ---------------------------------------------------------------------------------------------------
 
--- Perform a deep copy of a table - necessary when lifetime expires
---@param    orig table - orignial table
---@return   copy table - copied table
--- local copies = 0
--- local function DeepCopy(orig)
---     _P("Copies til now: ", copies)
---     copies = copies+1
---     local copy = {}
-
---     success, iterator = pcall(pairs, orig)
---     if success == true and (type(orig) == "table" or type(orig) == "userdata") then
-
---         for label, content in pairs(orig) do
-
---             if content then
---                  copy[DeepCopy(tostring(label))] = DeepCopy(content)
---             else
---                 copy[DeepCopy(label)] = "nil"
---             end
-
---         end
---         if copy and (not #copy == 0) then
---             setmetatable(copy, DeepCopy(getmetatable(orig)))
---         end
---     else
---         copy = orig
---     end
---     return copy
--- end
-
-local function sortData(data)
-
-    if type(data) == "table" or type(data) == "userdata" then
-        local array = {}
-
-        for key, value in pairs(data)do
-        table.insert(array, {key = key, value = value})
-        end
-
-        table.sort(array, function(a, b)
-            -- Convert keys to numbers for comparison
-            local keyA, keyB = tonumber(a.key), tonumber(b.key)
-            -- If conversion is successful, compare numerically
-            if keyA and keyB then
-                return keyA < keyB
-            else
-                -- If conversion fails, compare as strings
-                return a.key < b.key
-            end
-        end)
-
-        return array, data
-    else
-        return data, data
-    end
-end
-
-
+-- TODO - move to ClientServerCommunication
 local characterVisual
+
 Ext.Events.NetMessage:Subscribe(function(e) 
     if (e.Channel == "SendCharacterVisualResourceID") then
         -- _P("SendCharacterVisualResourceID recieved")
         local characterVisualResourceID = Ext.Json.Parse(e.Payload)
         -- _P(characterVisualResourceID)
         local characterVisual = Ext.Resource.Get(characterVisualResourceID, "CharacterVisual")
-        SCRIBE["VisualBank"].DATA = DeepCopy(characterVisual)
-        -- _P("Saved VisualBank")
-        -- _D(SCRIBE["VisualBank"].DATA)
+        scribeMap["VisualBank"].DATA = DeepCopy(characterVisual)
         InitializeScribeTree("VisualBank")
     end
 end)
@@ -315,9 +143,9 @@ end)
 local function getData(tab)
     if tab == "VisualBank" then
         -- _P("Retrieved VisualBank")
-        -- _D(SCRIBE[tab].DATA)
+        -- _D(scribeMap[tab].DATA)
     end
-    return SCRIBE[tab].DATA, sortData(SCRIBE[tab].DATA)
+    return scribeMap[tab].DATA, SortData(scribeMap[tab].DATA)
     
 end
 
@@ -328,14 +156,14 @@ function SaveData(tab)
 
     if tab == "Mouseover"  then
         data = GetMouseover()
-        SCRIBE[tab].DATA = DeepCopy(data)
+        scribeMap[tab].DATA = DeepCopy(data)
         
     elseif tab == "Entity" then
         data = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())):GetAllComponents()
-        SCRIBE[tab].DATA = data
+        scribeMap[tab].DATA = data
     elseif tab == "Visual" then
         data = Ext.Entity.Get(getUUIDFromUserdata(GetMouseover())).Visual
-        SCRIBE[tab].DATA = data
+        scribeMap[tab].DATA = data
     elseif tab == "VisualBank" then
         local uuid = getUUIDFromUserdata(GetMouseover())
         -- _P("UUID send for RequestCharacterVisualResourceID", uuid)
@@ -351,7 +179,7 @@ end
 
 
 -- declared beforehand since they reference each other
-local populateScribeTreeInitilization
+local PopulateScribeTree
 local populateScribeTree
 local addTreeOnClick
 
@@ -366,16 +194,15 @@ addTreeOnClick = function(tree, currentTable)
         if not treeClicked[tree] then
             treeClicked[tree] = true
 
-            local sortedData = sortData(currentTable)
-            populateScribeTreeInitilization(tree, sortedData)
-            --populateScribeTree(tree,currentTable)
+            local sortedData = SortData(currentTable)
+            PopulateScribeTree(tree, sortedData)
         end
     end
 end
 
 
 
--- TODO - add a nuch more, so we can get the race, the background etc.
+-- TODO - add much more, so we can get the race, the background etc.
 -- if the string is a loca, append the translated loca
 --@param str          string 
 --@return translation string
@@ -390,57 +217,8 @@ end
 
                 
 
--- TODO - translate locas
--- local materialInstances = {}
--- populateScribeTree = function(tree, currentTable)    
---     local success, iterator = pcall(pairs, currentTable)
---     if success == true and (type(currentTable) == "table" or type(currentTable) == "userdata") then
---         for label,content in pairs(currentTable) do
---             if content then
---                 -- special case for empty table
---                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
---                 -- TOD: some nodes have a [] but that contains more data -> send into recursion
---                 if stringify == "{}" or stringify == "[]" then
---                     local newTree = tree:AddTree(tostring(addLoca(label)))
---                     local child = newTree:AddTree(tostring(stringify))
---                     child.Bullet = true
---                 -- regular case -> recursion    
---                 elseif (type(content) == "table") or (type(content) == "userdata") then
---                     local newTree = tree:AddTree(tostring(addLoca(label)))
---                     local status, result = pcall(Ext.Types.Serialize, content)
---                     if not status then
---                         result = DeepCopy(content)
---                     end
---                     addTreeOnClick(newTree, result)
---                 -- content is non-table
---                 else
---                     local newTree = tree:AddTree(tostring(addLoca(label)))
---                     addTreeOnClick(newTree, content)
---                 end
---             -- empty content -> only put label as tree
---             else
---                 _P("label ", label)
---                 _D(label)
---                 local newTree = tree:AddTree(tostring(addLoca(label)))
---                 newTree.Bullet = true
---             end
---         end
---     -- table is not table but bool, string etc -> recursion ends here
---     else
---         local newTree
---         if Ext.Types.GetObjectType(currentTable) == "Entity" then
---             newTree = tree:AddTree(tostring(Ext.Entity.HandleToUuid(currentTable)))
---         else
---             newTree = tree:AddTree(tostring(addLoca(currentTable)))
---         end
---         newTree.Bullet = true
---     end
--- end
-
-
-
--- TODO - visual  lacks most content. Visual.Visual is missing
-populateScribeTreeInitilization = function(tree, sortedTable)
+-- TODO - visual  lacks most content. Visual.Visual is missing -> because its on client
+PopulateScribeTree = function(tree, sortedTable)
 
     -- during the first iteration, for sorting, labels are numbers. They can be discarded
 
@@ -506,7 +284,7 @@ local function updateScribeTree(tab)
     for i=1, #table.Children do
         table.Children[i]:Destroy()
     end
-    SCRIBE[tab].DATA = {}
+    scribeMap[tab].DATA = {}
     -- _P("Reset Data")
     initializedBefore = false
     -- _P("Re-Initializing Tree")
@@ -525,7 +303,7 @@ function InitializeScribeTree(tab)
         SaveData(tab)
     end
     -- if tab == "VisualBank" then
-    --     data = SCRIBE[tab].DATA
+    --     data = scribeMap[tab].DATA
     -- end
 
 
@@ -533,7 +311,7 @@ function InitializeScribeTree(tab)
     -- _P("InitializedBefore? ", initializedBefore)
     if initializedBefore == false then
         -- _P("Not initialized before ", tab)
-        --_D(SCRIBE[tab].DATA) -- exist here
+        --_D(scribeMap[tab].DATA) -- exist here
         --local table = GetScribeTable(tab) -- seizes to exist here
         local table = Tab:getTable(tab)
         --_D(table)
@@ -588,7 +366,7 @@ function InitializeScribeTree(tab)
         setScribeDumpText(tab, dumpText)
 
         -- during the first iteration, due to sorting, we want to discard the label
-        populateScribeTreeInitilization(rootTree, array)
+        PopulateScribeTree(rootTree, array)
             -- _D(data)
             --_P("Total trees created: ", totalTrees)
         totalTrees = 1
@@ -601,6 +379,8 @@ function InitializeScribeTree(tab)
         -- _P("InitializedBefore? ", initializedBefore)
         initializedBefore = true
         -- _P("InitializedBefore? ", initializedBefore)
+
+        Search:AddSearchFunctionalityToAllTabs()
     else
         -- _P("initializedBefore = ", initializedBefore)
         -- _P("Updating Tree")
