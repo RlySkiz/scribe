@@ -218,14 +218,75 @@ end
                 
 
 -- TODO - visual  lacks most content. Visual.Visual is missing -> because its on client
+-- PopulateScribeTree = function(tree, sortedTable)
+
+--     -- during the first iteration, for sorting, labels are numbers. They can be discarded
+
+
+--     local success, iterator = pcall(pairs, sortedTable)
+--     if success == true and (type(sortedTable) == "table" or type(sortedTable) == "userdata") then
+
+--         for index, entry in pairs(sortedTable) do 
+
+--             local label = entry.key
+--             local content = entry.value
+
+--             if content then
+
+--                 -- special case for empty table
+--                 local stringify = Ext.Json.Stringify(content, STRINGIFY_OPTIONS)
+--                 -- TODO: some nodes have a [] but that contains more data -> send into recursion
+--                 -- maybe check the object type  to determine
+--                 if stringify == "{}" or stringify == "[]" then
+--                     local newTree = tree:AddTree(tostring(addLoca(label)))
+--                     local child = newTree:AddTree(tostring(stringify))
+--                     child.Bullet = true
+--                 -- regular case -> recursion    
+--                 elseif (type(content) == "table") or (type(content) == "userdata") then
+--                     local newTree = tree:AddTree(tostring(addLoca(label)))
+--                     local status, result = pcall(Ext.Types.Serialize, content)
+--                     if not status then
+--                         result = DeepCopy(content)
+--                     end
+--                     addTreeOnClick(newTree, result)
+--                 -- content is non-table
+--                 else
+--                     local newTree = tree:AddTree(tostring(addLoca(label)))
+--                     addTreeOnClick(newTree, content)
+--                 end
+
+--             else
+--                 _P("label ", label)
+--                 _D(label)
+--                 local newTree = tree:AddTree(tostring(addLoca(label)))
+--                 newTree.Bullet = true
+
+--             end
+--         end
+
+--     else
+
+--         local newTree
+--         if Ext.Types.GetObjectType(sortedTable) == "Entity" then
+--             newTree = tree:AddTree(tostring(Ext.Entity.HandleToUuid(sortedTable)))
+--         else
+--             newTree = tree:AddTree(tostring(addLoca(sortedTable)))
+--         end
+--         newTree.Bullet = true
+
+--     end
+-- end
+
+local function IsScalar(v) -- by Norbyte
+    local ty = Ext.Types.GetValueType(v)
+    return ty == "nil" or ty == "string" or ty == "number" or ty == "boolean" or ty == "Enum" or ty == "Bitfield"
+end
+-- TODO - visual  lacks most content. Visual.Visual is missing -> because its on client
 PopulateScribeTree = function(tree, sortedTable)
 
     -- during the first iteration, for sorting, labels are numbers. They can be discarded
-
-
-    local success, iterator = pcall(pairs, sortedTable)
-    if success == true and (type(sortedTable) == "table" or type(sortedTable) == "userdata") then
-
+    if not IsScalar(sortedTable) then
+        
         for index, entry in pairs(sortedTable) do 
 
             local label = entry.key
@@ -242,7 +303,7 @@ PopulateScribeTree = function(tree, sortedTable)
                     local child = newTree:AddTree(tostring(stringify))
                     child.Bullet = true
                 -- regular case -> recursion    
-                elseif (type(content) == "table") or (type(content) == "userdata") then
+                elseif not IsScalar(content) then
                     local newTree = tree:AddTree(tostring(addLoca(label)))
                     local status, result = pcall(Ext.Types.Serialize, content)
                     if not status then
@@ -332,20 +393,22 @@ function InitializeScribeTree(tab)
 
         local tableRow = table:AddRow()
         local rootTreeWrapperCell = tableRow:AddCell()
-        local dumpTextWrapperCell = tableRow:AddCell()
+        local scalarDumpWrapperCell = tableRow:AddCell()
 
         local rootTreeWrapperTable = rootTreeWrapperCell:AddTable("",1)
         rootTreeWrapperTable.ScrollX = true
         rootTreeWrapperTable.ScrollY = true
-        local dumpTextWrapperTable = dumpTextWrapperCell:AddTable("",1)
-        dumpTextWrapperTable.ScrollX = true
-        dumpTextWrapperTable.ScrollY = true
+        local scalarDumpWrapperTable = scalarDumpWrapperCell:AddTable("",1)
+        scalarDumpWrapperTable.ScrollX = true
+        scalarDumpWrapperTable.ScrollY = true
         
-        local rootTreeWrapperRow = rootTreeWrapperTable:AddRow()
-        local dumpTextWrapperRow = dumpTextWrapperTable:AddRow()
+        local rootTreeRow = rootTreeWrapperTable:AddRow()
+        local scalarRow = scalarDumpWrapperTable:AddRow()
+        local dumpRow = scalarDumpWrapperTable:AddRow()
 
-        local rootTreeCell = rootTreeWrapperRow:AddCell()
-        local dumpTextCell = dumpTextWrapperRow:AddCell()
+        local rootTreeCell = rootTreeRow:AddCell()
+        local scalarCell = scalarRow:AddCell()
+        local dumpCell = dumpRow:AddCell()
         
         local rootTree = rootTreeCell:AddTree(tab)
 
@@ -359,7 +422,8 @@ function InitializeScribeTree(tab)
         --         _D(array)
         -- end
 
-        local dumpText = dumpTextCell:AddText(Ext.DumpExport(data))
+        local scalarTable = scalarCell:AddTable("",2)
+        local dumpText = dumpCell:AddText(Ext.DumpExport(data))
         -- local dumpText = dumpTextCell:AddText(Ext.DumpExport(data))
 
         setScribeRootTree(tab, rootTree)
