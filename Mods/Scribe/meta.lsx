@@ -4,12 +4,22 @@
   <region id="Config">
     <node id="root">
       <children>
-        <node id="Dependencies" />
+        <node id="Dependencies">
+          <children>
+            <node id="ModuleShortDesc">
+              <attribute id="Folder" type="LSWString" value="BG3MCM" />
+              <attribute id="MD5" type="LSString" value="" />
+              <attribute id="Name" type="FixedString" value="Mod Configuration Menu" />
+              <attribute id="UUID" type="FixedString" value="755a8a72-407f-4f0d-9a33-274ac0f0b53d" />
+              <attribute id="Version64" type="int64" value="37576909390872576" />
+            </node>
+          </children>
+        </node>
         <node id="ModuleInfo">
           <attribute id="UUID" type="FixedString" value="84b2cdba-ad21-4d8c-97d6-c09b95a6d9b4" />
           <attribute id="Name" type="LSString" value="Scribe" />
-          <attribute id="Author" type="LSString" value="Skiz" />
-          <attribute id="Description" type="LSString" value="Modding Helper" />
+          <attribute id="Author" type="LSString" value="Skiz and Satan" />
+          <attribute id="Description" type="LSString" value="Mousover Inspector" />
           <attribute id="Folder" type="LSString" value="Scribe" />
           <attribute id="CharacterCreationLevelName" type="FixedString" value="" />
           <attribute id="LobbyLevelName" type="FixedString" value="" />

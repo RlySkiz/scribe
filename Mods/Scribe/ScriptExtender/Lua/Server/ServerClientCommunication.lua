@@ -31,12 +31,12 @@ Ext.Events.NetMessage:Subscribe(function(e)
 
     --_D(Ext.Entity.Get("bd3c7bc6-5169-3451-5210-9ec9a9cf53b1").ServerCharacter.Template.CharacterVisualResourceID)
     -- "d67bd924-3c1f-c33a-5298-feca5bbdc284"
-    if (e.Channel == "RequestCharacterVisualResourceID") then
+    if (e.Channel == "Scribe_RequestFromServer_VisualResourceID") then
 
         local uuid = Ext.Json.Parse(e.Payload)
         local characterVisualResourceID = Ext.Entity.Get(uuid).ServerCharacter.Template.CharacterVisualResourceID
         -- local characterVisual = Ext.Resource.Get(characterVisualID, "CharacterVisual")
-        Ext.Net.BroadcastMessage("SendCharacterVisualResourceID",Ext.Json.Stringify(characterVisualResourceID))
+        Ext.Net.BroadcastMessage("Scribe_ToClient_VisualResourceID",Ext.Json.Stringify(characterVisualResourceID))
     end
 
     ---------------------------------------------------------------------------
@@ -44,8 +44,14 @@ Ext.Events.NetMessage:Subscribe(function(e)
     --                                Send Entity Data
     --
     ---------------------------------------------------------------------------
+    
+    if (e.Channel == "Scribe_RequestEntity") then
+        local entity = e.Payload
+        local dump = Ext.DumpExport(Ext.Entity.Get(entity):GetAllComponents())
+        Ext.Net.BroadcastMessage("Scribe_SendEntity", Ext.Json.Stringify(dump))
+    end
 
-      if (e.Channel == "RequestEntityData") then
+    if (e.Channel == "RequestEntityData") then
         -- _P("Received RequestEntityData")
         local entity = e.Payload
         local dump = Ext.Entity.Get(entity):GetAllComponents()

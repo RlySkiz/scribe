@@ -1,0 +1,9 @@
+{
+    "SchemaVersion": 1,
+    "Tabs": [
+        {
+            "TabName": "Scribe",
+            "TabId": "scribeTab"
+        }
+    ]
+}

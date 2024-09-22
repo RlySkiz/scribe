@@ -65,6 +65,15 @@ function getUUIDFromUserdata(mouseover)
     end
 end
 
+function CharacterCount(string)
+    local count = 0
+    for i=1, #string do
+        count = count + 1
+    end
+    return count
+end
+
+
 
 
 --------------------------------------------------------------------------------------------

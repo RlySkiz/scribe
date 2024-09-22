@@ -318,7 +318,7 @@ PopulateScribeTree = function(tree, sortedTable)
 
             else
                 _P("label ", label)
-                _D(label)
+                --_D(label)
                 local newTree = tree:AddTree(tostring(addLoca(label)))
                 newTree.Bullet = true
 
@@ -375,6 +375,7 @@ function InitializeScribeTree(tab)
         --_D(scribeMap[tab].DATA) -- exist here
         --local table = GetScribeTable(tab) -- seizes to exist here
         local table = Tab:getTable(tab)
+        table.SizingStretchProp = true
         --_D(table)
         
         

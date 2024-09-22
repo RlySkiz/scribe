@@ -127,7 +127,6 @@ function UnhideFilteredChild(child, subTable)
             child.Visible = true
         end
     end
-
 end
 
 ----------------------------------
@@ -164,14 +163,14 @@ end
 
 function Search:AddSearchFunctionalityToAllTabs()
 
-    for i,entry in pairs(Tab:getAllTabs()) do
-        entry.searchInput.OnChange = function()
-            local originalTable = GetScribeDumpText(entry.tab.Label)
-            _P("Search Term " , entry.searchInput.Text)
-            local sortedTable = Sorting:filter(entry.searchInput.Text, originalTable)
+    for i,tab in pairs(Tab:getAllTabs()) do
+        tab.search.OnChange = function()
+            local originalTable = GetScribeDumpText(tab.tab.Label)
+            _P("Search Term " , tab.search.Text)
+            local sortedTable = Sorting:filter(tab.search.Text, originalTable)
             --_D(sortedTable)
-            Search:HideAllChildren(entry.tab)
-            ForAllChildren(GetScribeRootTree(entry.tab.Label), UnhideFilteredChild, sortedTable)
+            Search:HideAllChildren(tab.tab)
+            ForAllChildren(GetScribeRootTree(tab.tab.Label), UnhideFilteredChild, sortedTable)
             --Search:UnhideFilteredChildren(entry.tab, sortedTable)
         --updateScribeTree(entry.tab.Label, sortedTable) 
         

@@ -17,8 +17,8 @@ Tab = {}
 Tab.__index = Tab
 
 
-function Tab:new()
-    local instance = setmetatable({}, Tab)
+function Tab:new(label, tabbar)
+    local instance = self:initialize(label, tabbar)
     return instance
 end
 
@@ -27,7 +27,7 @@ end
 --                                     Variables
 --------------------------------------------------------------------------------------------
 
---  {tab = tab, table = table, searchInput = searchInput}
+--  {tab = tab, table = table, search = search}
 local allTabs = {}
 
 --------------------------------------------------------------------------------------------
@@ -51,10 +51,10 @@ end
 
 
 --@param label string
-function Tab:getTable(label)
+function Tab:getContentArea(label)
     for i,entry in pairs(allTabs) do
         if entry.tab.Label == label then
-            return entry.table
+            return entry.contentArea
         end
     end
 end
@@ -62,10 +62,10 @@ end
 
 
 --@param label string
-function Tab:getSearchInput(label)
+function Tab:getSearch(label)
     for i,entry in pairs(allTabs) do
         if entry.tab.Label == label then
-            return entry.searchInput
+            return entry.search
         end
     end
 end
@@ -83,41 +83,26 @@ end
 -- initialize a tab according to Skiz' preferences and add it to "allTabs"
 --@param label  string
 --@param tabbar Tabbar
-function Tab:initializeTab(label, tabbar)
+function Tab:initialize(label, tabbar)
+    local tab = tabbar:AddTabItem(label)
+    tab.Visible = false
+    local search -- Placeholder until search gets implemented
 
-    thisTab = tabbar:AddTabItem(label)
+    -- local search = tab:AddInputText("")
+    -- search.Text = "Search"
+    -- local uuid = tab:AddText(label .. "UUID: ")
 
-    
-    
-    -- TODO - populate with entity UUID for all tabs except for mouseover
-    -- Maybe even as explanation how you'd write it in the console _D(Ext.Resource.Get([:AddInputText and SameLine for the UUID itself to be able to copy it], "CharacterVisual"))
-    uuidAndSearchTable = thisTab:AddTable("",2)
-    uuidAndSearchRow = uuidAndSearchTable:AddRow()
-    uuidAndSearchRow:AddCell():AddText(label .." UUID: ")
+    -- tab:AddSeparator()
 
-    uuid = thisTab:AddText("")
-    uuid.SameLine = true
+    local contentArea = tab:AddTable("",2)
+    -- contentArea.SizingStretchProp = true
+    -- contentArea.SizingFixedFit = true
+    -- contentArea.ScrollY = true
 
-    --searchButton = uuidAndSearchRow:AddCell():AddButton("Search")
-    searchCell = uuidAndSearchRow:AddCell()
-    searchInfo = searchCell:AddText("Search:")
-    searchInput = searchCell:AddInputText("") 
-    searchInput.Text = "" 
-    searchInput.SameLine = true  
-    searchInput.ItemWidth = -1
+    -- search.OnChange = function()
 
-    -- TODO - make more elegant
-    if label == "Mouseover" then
-        thisTab:AddText("Num_2 = mouseover/entity file dump | Num_3 = test stuff")
-    end
+    -- end
 
-
-
-    thisTab:AddSeparator()
-
-    thisTable = thisTab:AddTable("",2)
-    thisTable.ScrollY = true
-
-    table.insert(allTabs, {tab = thisTab, table = thisTable, searchInput = searchInput})
-
+    table.insert(allTabs, {tab = tab, contentArea = contentArea, search = search})
+    return tab
 end
