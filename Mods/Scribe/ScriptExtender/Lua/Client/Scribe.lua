@@ -217,7 +217,7 @@ local function getFreshComponentData(objUuid, comps)
 end
 
 local function tryGetMouseoverComponentValue(mouseoverData, previousComponent, components)
-    if #components == 1 then -- End of recursion
+    if components ~= nil and #components == 1 then -- End of recursion
         if not previousComponent then
             -- Directly access component from mouseoverData
             local value = mouseoverData[components[1]] or nil
@@ -232,7 +232,9 @@ local function tryGetMouseoverComponentValue(mouseoverData, previousComponent, c
     local currentComponent
     if not previousComponent then -- Recursion
         -- Directly access the first component from mouseoverData
-        currentComponent = mouseoverData[components[1]] or nil
+        if components ~= nil then
+            currentComponent = mouseoverData[components[1]]
+        end
         if not currentComponent then
             return nil -- Handle obscure cases where the component doesn't exist
         end
@@ -458,15 +460,6 @@ local function populateRoots(contentAreas, tab)
     local data = getData(tab)
     local sortedData, unsortedData = sortData(data)
 
-    treeRoot.OnClick = function()
-        local freshCompData = getFreshComponentData(treeRoot.Label, parents)
-        sortedData, unsortedData = sortData(freshCompData)
-        for i,content in ipairs(sortedData) do
-            populateScalarArea(scalarArea, sortedData, treeRoot)
-            populateDumpArea(dumpArea, sortedData)
-        end
-    end
-
     local function getParentsUntilRoot(node)
         local listOfParents = {}
         table.insert(listOfParents, node.Label)
@@ -489,6 +482,28 @@ local function populateRoots(contentAreas, tab)
         -- _D(listOfParents)
         return listOfParents
     end
+
+    treeRoot.OnClick = function()
+        local freshCompData
+        if tab == "Mouseover" then
+            freshCompData = scribeMap[tab].Data
+        elseif tab == "Entity" then
+            freshCompData = Ext.Entity.Get(treeRoot.Label):GetAllComponents()
+        elseif tab == "Visual" then
+            freshCompData = Ext.Entity.Get(treeRoot.Label).Visual
+        end
+        sortedData, unsortedData = sortData(freshCompData)
+        if sortedData ~= nil and #sortedData > 0 then
+            for i,content in ipairs(sortedData) do
+                populateScalarArea(scalarArea, sortedData, treeRoot)
+                populateDumpArea(dumpArea, freshCompData)
+            end
+        else
+            _P("[Scribe] Problem getting Data")
+        end
+    end
+
+
 
     --- func desc
     ---@param data any
@@ -728,6 +743,32 @@ local mcmTabFocused = true -- TODO: Find out how to actually get this informatio
 --         mcmTabFocused = true
 --     end
 -- end)
+
+local function giveNextFileName(wishFileName)
+    local count = 1
+
+    -- Strip the .json extension if it exists
+    local baseName, ext = wishFileName:match("^(.-)(%.json)$")
+    if not baseName then
+        -- If the file doesn't end with .json, assume the whole input is the base name
+        baseName = wishFileName
+        ext = ".json"
+    end
+
+    local function giveNextFileNameRecurse(currentFileName)
+        -- Check if the file exists
+        if Ext.IO.LoadFile(currentFileName) == nil then
+            return currentFileName
+        else
+            -- Recursively call with an incremented count
+            count = count + 1
+            return giveNextFileNameRecurse(baseName .. "_" .. tostring(count) .. ext)
+        end
+    end
+
+    return giveNextFileNameRecurse(wishFileName)
+end
+
 w.Open = false
 w.Closeable = true
 Ext.Events.KeyInput:Subscribe(function (e)
@@ -741,8 +782,8 @@ Ext.Events.KeyInput:Subscribe(function (e)
                 end
             end
             if e.Key == "NUM_2" and w.Open == true then
-                Ext.IO.SaveFile("Scribe/mouseoverDump.json", Ext.DumpExport(getMouseover()))
-                Ext.IO.SaveFile("Scribe/entityDump.json", Ext.DumpExport(Ext.Entity.Get(getUUIDFromUserdata(getMouseover())):GetAllComponents()))
+                Ext.IO.SaveFile(giveNextFileName("Scribe/mouseoverDump.json"), Ext.DumpExport(getMouseover()))
+                Ext.IO.SaveFile(giveNextFileName("Scribe/entityDump.json"), Ext.DumpExport(Ext.Entity.Get(getUUIDFromUserdata(getMouseover())):GetAllComponents()))
             end
 
             -- Displays Dump in IMGUI windows

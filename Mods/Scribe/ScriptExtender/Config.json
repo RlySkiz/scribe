@@ -1,5 +1,5 @@
 {
-    "RequiredVersion": 20,
+    "RequiredVersion": 21,
     "ModTable": "Scribe",
     "FeatureFlags": ["Lua"]
 }
