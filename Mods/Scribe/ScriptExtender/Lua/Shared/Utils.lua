@@ -98,9 +98,10 @@ end
 -- Measures the true size of a table, considering both sequential and non-sequential keys
 -- @param table table    -       table to count
 -- @return int           -       size of the table
-function TableSize(table)
+function TableSize(tbl)
+    if not tbl then return 0 end
     local count = 0
-        for _ in pairs(table) do
+    for _ in pairs(tbl) do
         count = count + 1
     end
     return count
