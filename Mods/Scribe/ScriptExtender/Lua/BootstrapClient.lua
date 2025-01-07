@@ -1,6 +1,9 @@
 -- Utilities
 Ext.Require("Shared/Utils.lua")
 
+-- User libs
+Ext.Require("Lib/_Init.lua")
+
 -- Communication between Client and Server
 
 Ext.Require("Client/ClientServerCommunication.lua")
