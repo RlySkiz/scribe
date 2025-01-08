@@ -1,9 +1,11 @@
 {
     "SchemaVersion": 1,
+    "ModName": "Scribe",
     "Tabs": [
         {
             "TabName": "Scribe",
             "TabId": "scribeTab"
         }
-    ]
+    ],
+    "Optional": true
 }

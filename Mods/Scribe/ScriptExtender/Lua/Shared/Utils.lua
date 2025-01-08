@@ -6,6 +6,33 @@ Helpers = {}
 --                 
 --
 ---------------------------------------------------------------------------------------
+local Debug = Debug
+Utils = {}
+function Utils.GetMouseOver()
+    local mouseover = Ext.UI.GetPickingHelper(1)
+    if mouseover ~= nil then
+    -- setSavedMouseover(mouseover)
+        return mouseover
+    else
+        Debug.Print("GetMouseover - No mouseover!")
+    end 
+end
+function Utils.GetUUIDFromUserData(mouseover)
+    local entity = mouseover.Inner.Inner[1].GameObject
+    if entity ~= nil then
+        return Ext.Entity.HandleToUuid(entity)
+    else
+        Debug.Print("getUUIDFromUserdata(mouseover) - Not an entity!")
+    end
+end
+function Utils.GetPropertyOrDefault(obj, propertyName, defaultValue)
+    local success, value = pcall(function() return obj[propertyName] end)
+    if success then
+        return value or defaultValue
+    else
+        return defaultValue
+    end
+end
 
 --------------------------------------------------------------------------------------------
 --                                      CONSTANTS
@@ -115,31 +142,23 @@ end
 --@return   copy table - copied table
 function DeepCopy(orig)
 local copy = {}
-
     success, iterator = pcall(pairs, orig)
     if success == true and (type(orig) == "table" or type(orig) == "userdata") then
-
         for label, content in pairs(orig) do
-
         if content then
             copy[DeepCopy(tostring(label))] = DeepCopy(content)
         else
             copy[DeepCopy(label)] = "nil"
         end
-
     end
-
     if copy and (not #copy == 0) then
         setmetatable(copy, DeepCopy(getmetatable(orig)))
     end
-
     else
         copy = orig
     end
         return copy
 end
-
-
 
 -- string.find but not case sensitive
 --@param str1 string       - string 1 to compare
@@ -151,26 +170,18 @@ function CaseInsensitiveSearch(str1, str2)
     return result ~= nil
 end
 
-
-
 -- TODO: concatenate function (copy from DOLL)
 function Concat(tab1, tab2)
 
 end
 
-
-
-
 -- sorts a key, value pair table
 function SortData(data)
-
     if type(data) == "table" or type(data) == "userdata" then
         local array = {}
-
         for key, value in pairs(data)do
         table.insert(array, {key = key, value = value})
         end
-
         table.sort(array, function(a, b)
             -- Convert keys to numbers for comparison
             local keyA, keyB = tonumber(a.key), tonumber(b.key)
@@ -182,9 +193,80 @@ function SortData(data)
                 return a.key < b.key
             end
         end)
-
         return array, data
     else
         return data, data
     end
+end
+
+Utils.ObjectPath = {}
+local ObjectPath = Utils.ObjectPath
+ObjectPath.__index = ObjectPath
+
+---@param uuid string Object UUID
+---@param table table Saved Path
+---@return ObjectPath
+function ObjectPath:New(uuid,table)
+    local p = {
+        Root = uuid,
+        Path = table or {},
+        ResolvePath = nil
+    }
+    setmetatable(p, self)
+    self.__index = self
+    return o
+end
+
+---@param name any
+function ObjectPath:CreateChild(name)
+    local childPath = self.Path
+    table.insert(childPath, name)
+    return ObjectPath:New(self.Root, childPath)
+end
+
+---@return ObjectPath
+function ObjectPath:Clone()
+    return ObjectPath:New(self.Root, self.Path)
+end
+
+---@return value any
+function ObjectPath:Resolve(previousComponent)
+    local previousComponent = previousComponent or nil -- previousComponent is either nil or set by recursion
+    if self.ResolvePath == nil then -- ResolvePath is nil at the start of recursion
+        self.ResolvePath = self.Path
+    end
+    local entity = Ext.Entity.Get(self.Root)
+
+    --#region Last step of Recursion
+        if #self.ResolvePath == 1 then
+            if not previousComponent then
+                local value = Utils.GetPropertyOrDefault(entity, self.ResolvePath[1], nil)
+                self.ResolvePath = nil
+                return value
+            else
+                local value = Utils.GetPropertyOrDefault(previousComponent, self.ResolvePath[1], nil)
+                self.ResolvePath = nil
+                return value
+            end
+        end
+    --#endregion
+
+    --#region Recursion
+        local currentComponent
+        if not previousComponent then
+            currentComponent = Utils.GetPropertyOrDefault(entity, self.ResolvePath[1], nil)
+            if not currentComponent then -- This should only happen before first recursion if the component isn't found
+                Debug.Print("ObjectPath:Resolve() - No currentComponent")
+                return nil
+            end
+        else
+            currentComponent = Utils.GetPropertyOrDefault(previousComponent, self.ResolvePath[1], nil)
+        end
+
+        table.remove(self.ResolvePath, 1) -- Remove the first index of ResolvePath for the next iteration to go through the correct Path
+        -- We don't remove from self.Path because it is used for other stuff
+
+        -- Return the result of the recursive call
+        return self:Resolve(currentComponent)
+    --#endregion
 end

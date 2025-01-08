@@ -843,4 +843,38 @@ end)
 -- Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Scribe", function(tab)
 --     initializeScribe(tab)
 -- end)
+
+local function createScribeMCMTab(treeParent)
+    treeParent:AddDummy(20,1)
+    local openButton = treeParent:AddButton(Ext.Loca.GetTranslatedString("h83db5cf7gfce3g475egb16fg37d5f05005e3", "Open/Close"))
+    openButton.OnClick = function(b)
+        if w.Open == true then
+            w.Open = false 
+        else
+            w.Open = true 
+        end
+    end
+end
+
+Ext.RegisterNetListener("MCM_Server_Send_Configs_To_Client", function(_, payload)
+    Mods.BG3MCM.IMGUIAPI:InsertModMenuTab(ModuleUUID, "Scribe", createScribeMCMTab)
+end)
+
+-- function DyeMenuTree(treeParent)
+--     local txt = treeParent:AddText(Ext.Loca.GetTranslatedString("h532f21abdfb64f6d97fa87f5fab40c55afab",
+--         "EasyDye has been moved to its own window now, which can be opened with 'F' by default or by clicking the button below."))
+--     local txt2 = treeParent:AddText(Ext.Loca.GetTranslatedString("h028f796a9cf04d16b7d5feb4f6679f783g6c",
+--         "\tSettings can be found in the Settings menu at the top of the new EasyDye window, and may be moved or duplicated back here at some point."))
+--     txt.TextWrapPos = 600*Imgui.ScaleFactor()
+--     txt2.TextWrapPos = 600*Imgui.ScaleFactor()
+--     treeParent:AddDummy(20,1)
+--     -- default open for testing
+--     local openButton = treeParent:AddButton(Ext.Loca.GetTranslatedString("h4feadea5bbd9403b8c47ee1503b1af41f231", "Open"))
+--     local bool = false
+--     openButton.OnClick = function(b)
+--         bool = not bool
+--         EasyDyeWindow:Open(bool)
+--     end
+-- end
+
 initializeScribe(w)
