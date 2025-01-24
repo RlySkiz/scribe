@@ -29,8 +29,8 @@ Ext.Require("Client/Logic/DataHandling.lua")
 
 -- Main Class
 
--- Ext.Require("Client/Scribe.lua")
-Ext.Require("Client/ScribeNew.lua")
+Ext.Require("Client/Scribe.lua")
+-- Ext.Require("Client/ScribeNew.lua")
 
 
 

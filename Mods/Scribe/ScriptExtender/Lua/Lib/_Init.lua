@@ -7,6 +7,9 @@ function RequireFiles(path, files)
     end
 end
 
+---@module "reactivex._init"
+RX = Ext.Require("Lib/ReactiveX/reactivex/_init.lua")
+
 RequireFiles("Lib/", {
     "Aahz/_Init",
 })
