@@ -6,7 +6,6 @@ ImguiServerEventLogger = _Class:Create("ImguiServerEventLogger", "ImguiLogger", 
 })
 
 function ImguiServerEventLogger:Init()
-    _P("Beep")
     Ext.RegisterNetListener("ServerEventNotification", function(_, payload)
         local data = Ext.Json.Parse(payload)
         if data then
@@ -57,8 +56,7 @@ end
 
 function ImguiServerEventLogger:InitializeLayout()
     if self.Ready then return end -- only initialize once
-    
-    RPrint("Creationed.")
+
     local childWin = self.Window:AddChildWindow("Scribe_ServerEventLoggerChildWin")
 
     -- childWin.AutoResizeY = true

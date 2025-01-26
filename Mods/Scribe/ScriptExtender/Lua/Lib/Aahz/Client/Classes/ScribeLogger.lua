@@ -19,7 +19,7 @@ function ScribeLogger:CreateWindow()
     self.Window = Ext.IMGUI.NewWindow("Scribe Log")
     self.Window.IDContext = "Scribe_Log"
     self.Window:SetSize({600,550}, "FirstUseEver")
-    self.Window.Open = true
+    self.Window.Open = false
     self.Window.Closeable = true
     self.Window.AlwaysAutoResize = true
     Imgui.NewStyling(self.Window)
