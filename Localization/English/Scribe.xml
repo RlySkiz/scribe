@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contentList>
 	<content contentuid="h83db5cf7gfce3g475egb16fg37d5f05005e3" version="1">LocaTest</content>
+    <content contentuid="h0a751a9f868d4b378b2e2616dca4672f4120" version="1">Open/Close Logger</content>
+    <content contentuid="h6d62ce733f1349ed8ca2d41e743dd9af2656" version="1">File</content>
 </contentList>

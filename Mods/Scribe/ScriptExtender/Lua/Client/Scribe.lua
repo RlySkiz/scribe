@@ -715,6 +715,13 @@ local tabs = {
 }
 local tabElements = {}
 local function initializeScribe(tab)
+    local windowMainMenu = tab:AddMainMenu()
+    local fileMenu = windowMainMenu:AddMenu(Ext.Loca.GetTranslatedString("h6d62ce733f1349ed8ca2d41e743dd9af2656", "File"))
+    local openCloseLogger = fileMenu:AddItem(Ext.Loca.GetTranslatedString("h0a751a9f868d4b378b2e2616dca4672f4120", "Open/Close Logger"))
+    openCloseLogger.OnClick = function()
+        if MainScribeLogger == nil then return end
+        MainScribeLogger.Window.Open = not MainScribeLogger.Window.Open
+    end
     local dev = tab:AddCheckbox("Developer Mode")
     dev.Visible = false -- NYI
     dev.OnChange = function()
@@ -775,11 +782,7 @@ Ext.Events.KeyInput:Subscribe(function (e)
     if mcmTabFocused == true then -- Only Execute Keybinds when our Tab is focused
         if e.Event == "KeyDown" and e.Repeat == false then
             if e.Key == "BACKSLASH" then
-                if w.Open == true then
-                   w.Open = false 
-                else
-                    w.Open = true 
-                end
+                w.Open = not w.Open
             end
             if e.Key == "NUM_2" and w.Open == true then
                 Ext.IO.SaveFile(giveNextFileName("Scribe/mouseoverDump.json"), Ext.DumpExport(getMouseover()))
@@ -848,11 +851,13 @@ local function createScribeMCMTab(treeParent)
     treeParent:AddDummy(20,1)
     local openButton = treeParent:AddButton(Ext.Loca.GetTranslatedString("h83db5cf7gfce3g475egb16fg37d5f05005e3", "Open/Close"))
     openButton.OnClick = function(b)
-        if w.Open == true then
-            w.Open = false 
-        else
-            w.Open = true 
-        end
+        w.Open = not w.Open
+    end
+    local openLogButton = treeParent:AddButton(Ext.Loca.GetTranslatedString("h0a751a9f868d4b378b2e2616dca4672f4120", "Open/Close Logger"))
+
+    openLogButton.OnClick = function(b)
+        if MainScribeLogger == nil then return end
+        MainScribeLogger.Window.Open = not MainScribeLogger.Window.Open
     end
 end
 

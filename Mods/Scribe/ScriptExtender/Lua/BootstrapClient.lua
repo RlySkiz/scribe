@@ -1,6 +1,9 @@
 -- Utilities
 Ext.Require("Shared/Utils.lua")
 
+-- User libs
+Ext.Require("Lib/_Init.lua")
+
 -- Communication between Client and Server
 
 Ext.Require("Client/ClientServerCommunication.lua")
@@ -26,8 +29,8 @@ Ext.Require("Client/Logic/DataHandling.lua")
 
 -- Main Class
 
--- Ext.Require("Client/Scribe.lua")
-Ext.Require("Client/ScribeNew.lua")
+Ext.Require("Client/Scribe.lua")
+-- Ext.Require("Client/ScribeNew.lua")
 
 
 
