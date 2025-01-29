@@ -1,3 +1,6 @@
+-- Static/Globals
+Ext.Require("Shared/Defines.lua")
+
 -- Utilities
 Ext.Require("Shared/Utils.lua")
 

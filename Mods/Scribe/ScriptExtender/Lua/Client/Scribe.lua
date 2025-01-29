@@ -6,7 +6,7 @@
 --
 ---------------------------------------------------------------------------------------
 
-Scribe = {}
+Scribe = Scribe or {}
 Scribe.__index = Scribe
 
 local w = Ext.IMGUI.NewWindow("Scribe")
@@ -717,11 +717,19 @@ local tabElements = {}
 local function initializeScribe(tab)
     local windowMainMenu = tab:AddMainMenu()
     local fileMenu = windowMainMenu:AddMenu(Ext.Loca.GetTranslatedString("h6d62ce733f1349ed8ca2d41e743dd9af2656", "File"))
+    local settingsMenu = fileMenu:AddItem(Ext.Loca.GetTranslatedString("hca001b2e6e7a49e9b152735a3a799083281g", "Settings"))
     local openCloseLogger = fileMenu:AddItem(Ext.Loca.GetTranslatedString("h0a751a9f868d4b378b2e2616dca4672f4120", "Open/Close Logger"))
+    Scribe.SettingsWindow = Scribe.GenerateSettingsWindow() -- FIXME
     openCloseLogger.OnClick = function()
         if MainScribeLogger == nil then return end
         MainScribeLogger.Window.Open = not MainScribeLogger.Window.Open
     end
+    settingsMenu.OnClick = function ()
+        if Scribe and Scribe.SettingsWindow ~= nil then
+            Scribe.SettingsWindow.Open = not Scribe.SettingsWindow.Open
+        end
+    end
+
     local dev = tab:AddCheckbox("Developer Mode")
     dev.Visible = false -- NYI
     dev.OnChange = function()
@@ -883,3 +891,4 @@ end)
 -- end
 
 initializeScribe(w)
+Scribe.Window = w
