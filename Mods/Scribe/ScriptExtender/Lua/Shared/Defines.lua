@@ -5,4 +5,5 @@ Static.Settings = {
     SettingsAutoResize = "SettingsAutoResize",
     OpenCloseScribe = "OpenCloseScribe", -- hotkey
     OpenOnStart = "OpenOnStart",
+    DoubleClickTime = 450, -- monotonic ms 
 }
