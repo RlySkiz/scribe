@@ -2,6 +2,7 @@
 Scribe = Scribe or {}
 Scribe.SettingsWindow = nil ---@type ExtuiWindow|nil
 local keybindScribe ---@type Keybinding
+local keybindNorbScribe ---@type Keybinding
 
 local function openCloseScribe()
     if Scribe and Scribe.Window then
@@ -25,6 +26,10 @@ local function openCloseScribeChanged()
     --     module.GivenWindow.UserData.OpenCloseItem.Shortcut = newShortcut
     -- end
 end
+local testInspector
+local function launchNorbScribe()
+    testInspector = Inspector:GetOrCreate(_C(), LocalPropertyInterface)
+end
 
 function Scribe.GenerateSettingsWindow()
     Scribe.SettingsWindow = Ext.IMGUI.NewWindow(Ext.Loca.GetTranslatedString("hb23f384926b64c349bd61fd84f23c88c3d4d", "Scribe Settings"))
@@ -45,6 +50,10 @@ function Scribe.GenerateSettingsWindow()
     keybindingsGroup:AddText(Ext.Loca.GetTranslatedString("h9727f426570b4fe39ae10934eb6510996b0d", "Open/Close Scribe"))
     keybindScribe = KeybindingManager:CreateAndDisplayKeybind(keybindingsGroup,
         "OpenCloseScribe", "SLASH", {"None"}, openCloseScribe, openCloseScribeChanged)
+
+    keybindingsGroup:AddText("Launch Norbscribe")
+    keybindNorbScribe = KeybindingManager:CreateAndDisplayKeybind(keybindingsGroup,
+        "LaunchNorbScribe", "T", {"Shift"}, launchNorbScribe)
 
     return Scribe.SettingsWindow
 end
