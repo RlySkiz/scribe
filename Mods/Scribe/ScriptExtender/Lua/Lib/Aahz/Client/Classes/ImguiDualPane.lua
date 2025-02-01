@@ -28,13 +28,13 @@ DualPaneChangeType = {
 ---@field ChangeType DualPaneChangeType
 ---@field Value string
 
----Called automatically after creation via :New{}
+---Called automatically after creation, via :New{}
 ---Use dualPane:AddOption() after as many times as needed
 ---@private
 function ImguiDualPane:Init()
     self.Ready = false
-    self.ChangesSubject = RX.Subject.create()
-    self.ChangesSubject:subscribe(function(change)
+    self.ChangesSubject = RX.Subject.Create()
+    self.ChangesSubject:Subscribe(function(change)
         if type(change) ~= "table" or not change.ChangeType or not change.Value then return end -- if not correct structure, bail
         if not DualPaneChangeType[change.ChangeType] then return end -- if not valid type, bail
 
@@ -94,7 +94,7 @@ end
 --- Adds a string as an available option to choose
 ---@param option string
 function ImguiDualPane:AddOption(option)
-    self.ChangesSubject:onNext({
+    self.ChangesSubject:OnNext({
         ChangeType = DualPaneChangeType.AddOption,
         Value = option,
     })
@@ -102,7 +102,7 @@ end
 
 -- Removes a given string from the available options
 function ImguiDualPane:RemoveOption(option)
-    self.ChangesSubject:onNext({
+    self.ChangesSubject:OnNext({
         ChangeType = DualPaneChangeType.RemoveOption,
         Value = option,
     })
@@ -185,23 +185,27 @@ function ImguiDualPane:InitializeLayout()
     leftPane.DragDropType = id.."_Available"
     rightPane.DragDropType = id.."_Selected"
 
+    ---@param pane ExtuiChildWindow
+    ---@param dropped ExtuiSelectable
+    ---@param changeType string
     local function handleDragDrop(pane, dropped, changeType)
         if dropped.Selected then
             -- Possibly multi-drag, iterate all children and collect selected labels to move
             local selected = {}
+            ---@param v ExtuiSelectable
             for _, v in ipairs(pane.Children) do
                 if v.Selected then
                     table.insert(selected, v.Label)
                 end
             end
             for _, label in ipairs(selected) do
-                self.ChangesSubject:onNext({
+                self.ChangesSubject:OnNext({
                     ChangeType = changeType,
                     Value = label,
                 })
             end
         else
-            self.ChangesSubject:onNext({
+            self.ChangesSubject:OnNext({
                 ChangeType = changeType,
                 Value = dropped.Label,
             })
@@ -225,13 +229,14 @@ function ImguiDualPane:InitializeLayout()
     local function handleIndividualButton(button, changeType, pane)
         button.OnClick = function()
             local selected = {}
+            ---@param v ExtuiSelectable
             for _, v in ipairs(pane.Children) do
                 if v.Selected then
                     table.insert(selected,v.Label)
                 end
             end
             for _, label in ipairs(selected) do
-                self.ChangesSubject:onNext({
+                self.ChangesSubject:OnNext({
                     ChangeType = changeType,
                     Value = label,
                 })
@@ -247,7 +252,7 @@ function ImguiDualPane:InitializeLayout()
         button.OnClick = function()
             for k, v in pairs(self._optionsMap) do
                 if condition(v) then
-                    self.ChangesSubject:onNext({
+                    self.ChangesSubject:OnNext({
                         ChangeType = changeType,
                         Value = k,
                     })
@@ -309,6 +314,7 @@ function ImguiDualPane:_ApplySorting()
     -- Collect which nodes are selected, to reapply after sorting
     local function getSelected(pane)
         local tbl = {}
+        ---@param v ExtuiSelectable
         for _, v in ipairs(pane.Children) do
             if v.Selected then
                 tbl[v.Label] = true
@@ -323,6 +329,7 @@ function ImguiDualPane:_ApplySorting()
     self._headerTable:OnSortChanged()
     -- Reapply which elements are selected
     local function applySelected(tbl, pane)
+        ---@param v ExtuiSelectable
         for _, v in ipairs(pane.Children) do
             if tbl[v.Label] then
                 v.Selected = true
@@ -352,7 +359,7 @@ local function handleDoubleClick(self, selectable, changeType)
     if lastClickTime ~= nil then
         if Ext.Utils.MonotonicTime() - lastClickTime <= Static.Settings.DoubleClickTime then
             self._doubleClickTimeMap[selectable.Label] = nil
-            self.ChangesSubject:onNext({
+            self.ChangesSubject:OnNext({
                 ChangeType = changeType,
                 Value = selectable.Label,
             })
